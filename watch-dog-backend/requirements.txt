@@ -1,0 +1,4 @@
+flask
+vidgear[core]
+opencv-python
+setuptools
