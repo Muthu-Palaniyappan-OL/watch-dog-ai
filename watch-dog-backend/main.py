@@ -2,9 +2,9 @@ from flask import Flask, request, jsonify
 import threading
 import time
 from vidgear.gears import CamGear
+from frame import process_a_frame
 import cv2
 
-# Initialize Flask app
 app = Flask(__name__)
 
 # Global Variables
@@ -13,34 +13,39 @@ stream_url = None
 streaming_thread = None
 stream_running = False
 stream_lock = threading.Lock()
+display_frame = True
 
 
 def start_stream(url):
     """Function to start the YouTube stream."""
-    global stream, stream_running
+    global stream, stream_running, display_frame
     stream = CamGear(source=url, stream_mode=True, logging=True).start()
     stream_running = True
     while stream_running:
         frame = stream.read()
         if frame is None:
             break
-        frame = cv2.resize(frame, (256, 256))
-        cv2.imshow("Output Frame", frame)
+        if process_a_frame(frame):
+            print("BIG EVENT")
+        if display_frame:
+            cv2.imshow("Output Frame", frame)
         key = cv2.waitKey(15) & 0xFF
         if key == ord("q"):
             stop_stream()
             break
-    cv2.destroyAllWindows()
+    if display_frame:
+        cv2.destroyAllWindows()
 
 
 def stop_stream():
     """Function to stop the YouTube stream."""
-    global stream, stream_running
+    global stream, stream_running, display_frame
     if stream is not None:
         stream_running = False
         stream.stop()
         stream = None
-        cv2.destroyAllWindows()
+        if display_frame:
+            cv2.destroyAllWindows()
 
 
 def stream_manager():

@@ -1,4 +1,6 @@
 flask
 vidgear[core]
-opencv-python
 setuptools
+opencv-python
+pytube
+yt_dlp
