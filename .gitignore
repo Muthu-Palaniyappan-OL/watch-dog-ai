@@ -1,2 +1,3 @@
 watch-dog-frontend/node_modules/
 watch-dog-backend/myvenv/
+watch-dog-backend/.env
