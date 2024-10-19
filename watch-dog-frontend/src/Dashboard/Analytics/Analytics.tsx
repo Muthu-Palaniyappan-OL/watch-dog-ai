@@ -1,4 +1,8 @@
+import AnalyticsPage from "./AnalyticsTable";
+
 export default function Analytics() {
-    return <div>Analytics Page</div>;
+    return( <div>
+    <AnalyticsPage/>
+      </div>);
   }
   
