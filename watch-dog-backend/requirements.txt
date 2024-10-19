@@ -9,3 +9,5 @@ scenedetect[opencv]
 python-dotenv
 flask_sqlalchemy
 psycopg2
+Flask-SQLAlchemy
+psycopg2-binary

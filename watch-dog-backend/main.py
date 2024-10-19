@@ -2,20 +2,21 @@ from flask import Flask, request, jsonify
 import threading
 import time
 from vidgear.gears import CamGear
-from frame import process_a_frame,test_process_image
+from frame import process_a_frame, test_process_image
 import cv2
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
+
 # Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app, origins=["*"])
 # Database connection details
-app.config['SQLALCHEMY_DATABASE_URI'] =  os.getenv('DATABASE_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
@@ -26,6 +27,44 @@ streaming_thread = None
 stream_running = False
 stream_lock = threading.Lock()
 display_frame = True
+
+
+class Camera(db.Model):
+    __tablename__ = "cameras"
+
+    id = db.Column(db.Integer, primary_key=True)  # ID for the camera
+    name = db.Column(
+        db.String, unique=True, nullable=False
+    )  # Unique name for the camera
+    monitoring = db.Column(db.Boolean, nullable=False)  # Monitoring status
+    email = db.Column(db.String, nullable=False)  # Email associated with the camera
+    live = db.Column(db.Boolean, nullable=False)  # Live status
+    url = db.Column(db.String, nullable=False)  # URL of the camera
+
+    def __repr__(self):
+        return f"<Camera {self.name}>"
+
+
+# Define the Transcript model
+class Transcript(db.Model):
+    __tablename__ = "transcripts"
+
+    id = db.Column(db.Integer, primary_key=True)  # Primary key
+    camera_id = db.Column(
+        db.Integer, db.ForeignKey("cameras.id"), nullable=False
+    )  # Foreign key to cameras
+    transcript = db.Column(db.Text, nullable=False)  # Transcript text
+
+    camera = db.relationship(
+        "Camera", backref="transcripts"
+    )  # Relationship with Camera
+
+    def __repr__(self):
+        return f"<Transcript for Camera ID {self.camera_id}>"
+
+
+with app.app_context():
+    db.create_all()
 
 
 def start_stream(url):
@@ -100,11 +139,13 @@ def stop():
     stop_stream()
     return jsonify({"message": "Stream stopped!"}), 200
 
+
 @app.route("/process_image", methods=["POST"])
 def process_image():
     """API to stop the stream."""
     test_process_image("image.png")
     return jsonify({"message": "image processed!"}), 200
+
 
 @app.route("/change", methods=["POST"])
 def change():
@@ -135,44 +176,13 @@ def cameras():
     return jsonify(
         [
             {
-                "name": "Camera 1",
-                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
-                "live": True,
-                "monitoringStatus" : True,
-                "email":"ksaisathish@gmail.com"
-            },
-            {
-                "name": "Camera 2",
-                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
-                "live": False,
-                "monitoringStatus" : False,
-            },
-            {
-                "name": "Camera 3",
-                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
-                "live": True,
-                "monitoringStatus" : True,
-                "email":"ksaisathish@gmail.com"
-            },
-            {
-                "name": "Camera 4",
-                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
-                "live": False,
-                "monitoringStatus" : False,
-            },
-            {
-                "name": "Camera 5",
-                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
-                "live": True,
-                "monitoringStatus" : True,
-                "email":"ksaisathish@gmail.com"
-            },
-            {
-                "name": "Camera 6",
-                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
-                "live": False,
-                "monitoringStatus" : False,
-            },
+                "email": d.email,
+                "live": d.live,
+                "monitoringStatus": d.monitoring,
+                "name": d.name,
+                "url": d.url,
+            }
+            for d in Camera.query.all()
         ]
     )
 
