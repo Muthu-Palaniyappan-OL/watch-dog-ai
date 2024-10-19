@@ -48,3 +48,6 @@ Content-Type: application/json
 
 ### Get all transcripts by camera id
 GET http://127.0.0.1:5000/transcripts/1
+
+### Get all transcripts by camera id
+GET http://127.0.0.1:5000/transcripts/human_activity/1
