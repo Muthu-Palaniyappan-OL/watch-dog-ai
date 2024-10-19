@@ -43,7 +43,8 @@ PUT http://127.0.0.1:5000/updatecam/1
 Content-Type: application/json
 
 {
-    "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo"
+    "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
+    "email": "muthu892542@gmail.com"
 }
 
 ### Get all transcripts by camera id

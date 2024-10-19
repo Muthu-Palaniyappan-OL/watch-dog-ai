@@ -1,0 +1,16 @@
+numpy<2
+pandas
+torch
+transformers
+sentence_transformers
+huggingface-hub
+torch
+torchvision
+torchaudio==2.0.2
+fastapi
+gunicorn
+Flask
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
