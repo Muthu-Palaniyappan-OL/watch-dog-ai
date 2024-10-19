@@ -138,11 +138,40 @@ def cameras():
                 "name": "Camera 1",
                 "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
                 "live": True,
+                "monitoringStatus" : True,
+                "email":"ksaisathish@gmail.com"
             },
             {
                 "name": "Camera 2",
                 "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
                 "live": False,
+                "monitoringStatus" : False,
+            },
+            {
+                "name": "Camera 3",
+                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
+                "live": True,
+                "monitoringStatus" : True,
+                "email":"ksaisathish@gmail.com"
+            },
+            {
+                "name": "Camera 4",
+                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
+                "live": False,
+                "monitoringStatus" : False,
+            },
+            {
+                "name": "Camera 5",
+                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
+                "live": True,
+                "monitoringStatus" : True,
+                "email":"ksaisathish@gmail.com"
+            },
+            {
+                "name": "Camera 6",
+                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
+                "live": False,
+                "monitoringStatus" : False,
             },
         ]
     )

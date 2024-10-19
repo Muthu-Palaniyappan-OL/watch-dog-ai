@@ -7,6 +7,7 @@ interface Camera {
   name: string;
   url: string;
   live: boolean;
+  email: string;
   monitoringStatus: boolean;
 }
 
@@ -35,7 +36,7 @@ const ManageCamera: React.FC = () => {
         </h1>
         <button
           className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        
+
         >
           Add Camera
         </button>
@@ -49,6 +50,7 @@ const ManageCamera: React.FC = () => {
               <th scope="col" className="px-6 py-3">Camera Name</th>
               <th scope="col" className="px-6 py-3">Feed URL</th>
               <th scope="col" className="px-6 py-3">Live Status</th>
+              <th scope="col" className="px-6 py-3">Alert E-Mail</th>
               <th scope="col" className="px-6 py-3">Monitoring Status</th>
               <th scope="col" className="px-6 py-3">Action</th>
             </tr>
@@ -67,6 +69,7 @@ const ManageCamera: React.FC = () => {
                     <span className="text-red-500 font-semibold">⚫ Offline</span>
                   )}
                 </td>
+                <td className="px-6 py-4">{camera.email}</td>
                 <td className="px-6 py-4">
                   <button
                     className={`px-4 py-2 text-sm font-medium rounded-md ${
