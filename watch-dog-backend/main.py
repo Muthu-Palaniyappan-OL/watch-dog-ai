@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from vision import get_caption, image_path_to_image_b64
 import os
 from datetime import datetime
-from db import Camera, TranscriptDetailed
+from db import Camera, TranscriptDetailed, Alert
 
 # Load environment variables from .env file
 
@@ -281,6 +281,34 @@ def activity_name(activity_name, camera_id=None):
             {
                 "frame_number": d.frame_number,
                 activity_name: getattr(d, activity_name),
+            }
+            for d in data
+        ]
+    )
+
+
+@app.get("/alerts/")
+@app.get("/alerts/<int:camera_id>")
+def alerts(camera_id=None):
+    query = Alert.query
+
+    # If camera_id is provided, filter by that camera_id
+    if camera_id is not None:
+        query = query.filter_by(camera_id=camera_id)
+
+    # Fetch all matching records
+    data = query.all()
+
+    # Return the JSON response with dynamic field name
+    return jsonify(
+        [
+            {
+                "camera_id": d.camera_id,
+                "frame_number": d.frame_number,
+                "alert_type": d.alert_type,
+                "description": d.description,
+                "timestamp": d.timestamp,
+                "status": d.status,
             }
             for d in data
         ]
