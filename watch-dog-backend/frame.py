@@ -3,6 +3,7 @@ import numpy as np
 from scenedetect import SceneManager, FrameTimecode
 from scenedetect.detectors import HashDetector
 from vision import get_caption
+
 # Initialize SceneManager and ContentDetector globally
 scene_manager = SceneManager()
 scene_manager.add_detector(HashDetector(threshold=0.08))
@@ -12,6 +13,7 @@ frame_number = 0
 
 # Define video FPS (frames per second) - adjust FPS to match your video source.
 VIDEO_FPS = 30  # Example FPS, replace with actual FPS if known
+
 
 def process_a_frame(frame):
     global frame_number
@@ -33,6 +35,10 @@ def process_a_frame(frame):
         caption = get_caption(compressed_frame_path)
         print(f"Caption for frame {frame_number}: {caption}")
 
-def test_process_image(image):
-    caption = get_caption(image)
+
+def test_process_image(image_path):
+    # compression_params = [cv2.IMWRITE_PNG_COMPRESSION, 80]
+    # compressed_frame_path = f"./frame/" + image_path
+    # cv2.imwrite(compressed_frame_path, compressed_frame_path, compression_params)
+    caption = get_caption(image_path)
     print(f"Caption for frame {frame_number}: {caption}")

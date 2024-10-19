@@ -6,3 +6,6 @@ pytube
 yt_dlp
 flask-cors
 scenedetect[opencv]
+python-dotenv
+flask_sqlalchemy
+psycopg2
