@@ -5,3 +5,4 @@ opencv-python
 pytube
 yt_dlp
 flask-cors
+scenedetect[opencv]

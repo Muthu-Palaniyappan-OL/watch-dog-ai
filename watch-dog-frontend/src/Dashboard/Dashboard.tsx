@@ -39,7 +39,7 @@ export default function Example() {
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <img
-                    alt="Your Company"
+                    alt="WatchDog AI"
                     src="/watchdog.png"
                     className="h-8 w-8"
                   />
@@ -172,7 +172,7 @@ export default function Example() {
         </Disclosure>
 
         <main>
-          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-full px-0 py-6 sm:px-6 lg:px-2">
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard/cctv-view" />} />
               <Route path="cctv-view" element={<CCTVView />} />
@@ -182,6 +182,7 @@ export default function Example() {
             </Routes>
           </div>
         </main>
+
       </div>
     </div>
   )
