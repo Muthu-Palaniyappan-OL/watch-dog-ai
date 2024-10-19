@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 import threading
 import time
 from vidgear.gears import CamGear
@@ -8,6 +8,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
+from datetime import datetime
 
 # Load environment variables from .env file
 load_dotenv()
@@ -40,6 +41,7 @@ class Camera(db.Model):
     email = db.Column(db.String, nullable=False)  # Email associated with the camera
     live = db.Column(db.Boolean, nullable=False)  # Live status
     url = db.Column(db.String, nullable=False)  # URL of the camera
+    start_time = db.Column(db.DateTime, nullable=False)
 
     def __repr__(self):
         return f"<Camera {self.name}>"
@@ -172,19 +174,99 @@ def change():
 
 
 @app.get("/getcams")
-def cameras():
+def getcams():
     return jsonify(
         [
             {
+                "id": d.id,
                 "email": d.email,
                 "live": d.live,
                 "monitoringStatus": d.monitoring,
                 "name": d.name,
                 "url": d.url,
+                "start_time": d.start_time.strftime("%Y-%m-%d %H:%M:%S"),
             }
             for d in Camera.query.all()
         ]
     )
+
+
+@app.post("/addcams")
+def addcams():
+    data = request.json
+    try:
+        # Check if there is already a camera with monitoring set to True
+        existing_monitoring_camera = Camera.query.filter_by(monitoring=True).first()
+
+        if data.get("monitoringStatus") and existing_monitoring_camera:
+            return jsonify({"error": "Only 1 camera should be monitoring"}), 400
+
+        cam = Camera()
+        cam.email = data["email"]
+        cam.live = data["live"]
+        cam.monitoring = data["monitoringStatus"]
+        cam.name = data["name"]
+        cam.url = data["url"]
+
+        if "start_time" in data:
+            cam.start_time = datetime.strptime(data["start_time"], "%Y-%m-%d %H:%M:%S")
+        else:
+            cam.start_time = db.func.current_timestamp()
+
+        db.session.add(cam)
+        db.session.commit()
+
+        return jsonify({"msg": "success"})
+
+    except Exception as e:
+        error = jsonify({"error": str(e)})
+        return error, 400
+
+
+# Update a camera
+@app.put("/updatecam/<int:camera_id>")
+def update_cam(camera_id):
+    data = request.json
+    try:
+        # Find the camera by its ID
+        cam = Camera.query.get(camera_id)
+
+        # If camera is not found, return an error
+        if not cam:
+            return jsonify({"error": "Camera not found"}), 404
+
+        # Check if another camera is already set as monitoring, and prevent updates if so
+        if "monitoringStatus" in data and data["monitoringStatus"]:
+            existing_monitoring_camera = Camera.query.filter(
+                Camera.monitoring == True, Camera.id != camera_id
+            ).first()
+            if existing_monitoring_camera:
+                return jsonify({"error": "Only 1 camera should be monitoring"}), 400
+
+        # Update the camera fields based on the request data
+        if "email" in data:
+            cam.email = data["email"]
+        if "live" in data:
+            cam.live = data["live"]
+        if "monitoringStatus" in data:
+            cam.monitoring = data["monitoringStatus"]
+        if "name" in data:
+            cam.name = data["name"]
+        if "url" in data:
+            cam.url = data["url"]
+
+        if "start_time" in data:
+            cam.start_time = datetime.strptime(data["start_time"], "%Y-%m-%d %H:%M:%S")
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        return jsonify({"msg": "Camera updated successfully"})
+
+    except Exception as e:
+        # Handle any exception and return an error response
+        error = jsonify({"error": str(e)})
+        return error, 400
 
 
 if __name__ == "__main__":
