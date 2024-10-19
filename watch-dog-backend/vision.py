@@ -28,7 +28,7 @@ def get_caption(image_path):
             }
         ],
         "max_tokens": 512,
-        "temperature": 0.5,
+        "temperature": 0.6,
         "top_p": 1.00,
         "stream": stream
     }
