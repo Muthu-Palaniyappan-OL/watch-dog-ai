@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import SignUpModal from './SignUpModal';
 import {LockClosedIcon, VideoCameraIcon, BellAlertIcon, DocumentTextIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
-
+import { motion } from 'framer-motion';
 const features = [
   {
     name: 'Natural Language Queries',
@@ -38,6 +38,9 @@ const features = [
 
 const LandingPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -48,21 +51,24 @@ const LandingPage = () => {
   };
 
   return (
+    
     <div>
       <div className="bg-white">
         <header className="absolute inset-x-0 top-0 z-50 ">
           <nav className="flex items-center justify-between p-6 lg:px-8 bg-gray-800" aria-label="Global">
-            <div className="flex lg:flex-1">
+            <div className="flex lg:flex-1"> 
+            
               <a href="#" className="-m-1.5 p-1.5">
                 <span className="sr-only">WatchDog AI</span>
                 <img className="h-10 w-auto" src="./watchdog.svg" alt=""/>
               </a>
             </div>
+           
             <div className="flex lg:hidden">
               <button type="button" className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-stone-300">
                 <span className="sr-only">Open main menu</span>
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
               </button>
             </div>
@@ -86,8 +92,8 @@ const LandingPage = () => {
                 </a>
                 <button type="button" className="-m-2.5 rounded-md p-2.5 text-gray-700">
                   <span className="sr-only">Close menu</span>
-                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
@@ -119,6 +125,30 @@ const LandingPage = () => {
           </div>
           <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
             <div className="text-center">
+            <motion.img
+              className="absolute left-[408px] top-[140px]"
+              drag
+              src='/doggo.png'
+              dragSnapToOrigin
+              dragTransition={{bounceStiffness: 40, bounceDamping: 7 }}
+              animate={["initial"]}
+              variants={{
+                initial: {
+                  y: [-10, 10],
+                  x:[-5,5],
+                  rotate: 5,
+                  transition: {
+                    delay:1,
+                    duration: 2,
+                    repeat: Infinity,
+                    // repeatDelay: 0.2,
+                    repeatType: "reverse"
+                  }
+                }
+              }}
+            >
+            </motion.img>
+          
               <h1 className="text-balance text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Revolutionize Your Security with WatchDog AI</h1>
               <p className="mt-6 text-lg leading-8 text-gray-600">The Future of Surveillance: AI That Understands Your World</p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
