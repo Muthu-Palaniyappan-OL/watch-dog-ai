@@ -4,8 +4,10 @@ import time
 from vidgear.gears import CamGear
 from frame import process_a_frame
 import cv2
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, origins=["*"])
 
 # Global Variables
 stream = None
@@ -112,6 +114,24 @@ def change():
     streaming_thread.start()
 
     return jsonify({"message": f"Stream changed to URL: {stream_url}"}), 200
+
+
+@app.get("/getcams")
+def cameras():
+    return jsonify(
+        [
+            {
+                "name": "Camera 1",
+                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
+                "live": True,
+            },
+            {
+                "name": "Camera 2",
+                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
+                "live": False,
+            },
+        ]
+    )
 
 
 if __name__ == "__main__":
