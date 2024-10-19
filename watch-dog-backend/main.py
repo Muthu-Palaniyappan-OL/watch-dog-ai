@@ -27,8 +27,7 @@ def start_stream(url):
         frame = stream.read()
         if frame is None:
             break
-        if process_a_frame(frame):
-            print("BIG EVENT")
+        process_a_frame(frame)
         if display_frame:
             cv2.imshow("Output Frame", frame)
         key = cv2.waitKey(15) & 0xFF
