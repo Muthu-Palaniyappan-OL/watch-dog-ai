@@ -4,6 +4,7 @@ import { LockClosedIcon, VideoCameraIcon, BellAlertIcon, DocumentTextIcon, ChatB
 import { motion } from 'framer-motion';
 import Team from './Team';
 import VideoSection from './DemoVideo';
+import HowItWorksSection from './HowItWorks';
 
 
 const features = [
@@ -86,7 +87,7 @@ const LandingPage = () => {
               <a href="#Features" className="text-lg font-semibold leading-6 text-stone-300 hover:text-sky-300">Features</a>
               <a href="#team" className="text-lg font-semibold leading-6 text-stone-300  hover:text-sky-300">Team</a>
               <a href="#demo" className="text-lg font-semibold leading-6 text-stone-300  hover:text-sky-300">Demo Video</a>
-              <a href="#" className="text-lg font-semibold leading-6 text-stone-300  hover:text-sky-300">Company</a>
+              <a href="#howitworks" className="text-lg font-semibold leading-6 text-stone-300  hover:text-sky-300">How it works?</a>
             </div>
             <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center space-x-2">
               <a href="https://github.com/Muthu-Palaniyappan-OL/watch-dog-ai/" className="text-lg font-semibold leading-10 text-stone-300">
@@ -104,11 +105,11 @@ const LandingPage = () => {
             <div className="lg:hidden" role="dialog" aria-modal="true">
               <div className="fixed inset-0 z-50 bg-black bg-opacity-50" onClick={closeMenu}></div>
               <div className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-                <div className="flex items-center justify-between">
-                  <a href="#" className="-m-1.5 p-1.5">
+                <div className="flex items-center justify-between max-w-sm">
+                  <a href="#" className=" p-1.5">
                     <img className="h-20 w-auto" src="./watchdog.svg" alt="Logo" />
                   </a>
-                  <button type="button" onClick={closeMenu} className="-m-2.5 rounded-md p-2.5 text-gray-700">
+                  <button type="button" onClick={closeMenu} className="-m-5 rounded-md p-2.5 text-gray-700">
                     <svg
                       className="h-6 w-6"
                       fill="none"
@@ -122,6 +123,7 @@ const LandingPage = () => {
                   </button>
                 </div>
                 <div className="mt-6 flow-root">
+                  
                   <div className="-my-6 divide-y divide-gray-500/10">
                     <div className="space-y-2 py-6">
                       <a href="#Features" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
@@ -133,8 +135,8 @@ const LandingPage = () => {
                       <a href="#video" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                         Demo Video
                       </a>
-                      <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                        Company
+                      <a href="#howitworks" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                        How it works?
                       </a>
                     </div>
                     <div className="py-6">
@@ -197,13 +199,13 @@ const LandingPage = () => {
                         e.preventDefault(); // Prevent the default anchor behavior
                         openModal();
                       }}
-                      className="rounded-md bg-sky-400 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                      className="rounded-md bg-sky-400 px-3.5 py-2.5 text-lg font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
                     >
                       Get started
                     </a>
 
 
-                  </div> <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a>
+                  </div> <a href="https://www.canva.com/design/DAGT8aE_8uU/MS9znK2AT5g84Po3fdoodg/edit?utm_content=DAGT8aE_8uU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" className="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a>
                 </div>
               </div>
             </div>
@@ -257,6 +259,9 @@ const LandingPage = () => {
         <VideoSection />
       </div>
 
+      <div id="howitworks">
+        <HowItWorksSection />
+      </div>
     </div>
   );
 };
