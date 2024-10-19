@@ -3,11 +3,6 @@
 ### special place https://www.youtube.com/watch?v=IJSdhfsrnMo
 ### sai https://www.youtube.com/watch?v=txZATEyGVpA
 POST http://127.0.0.1:5000/start
-Content-Type: application/json
-
-{
-    "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo"
-}
 
 ### STOP STREAM
 POST http://127.0.0.1:5000/stop
@@ -26,12 +21,12 @@ Content-Type: application/json
     "email": "ksaisathish@gmail.com",
     "live": true,
     "monitoringStatus": false,
-    "name": "Sai Home Camera 1",
+    "name": "Sai Home Camera 2",
     "url": "https://www.youtube.com/watch?v=txZATEyGVpA"
 }
 
 ###
-PUT http://127.0.0.1:5000/updatecam
+PUT http://127.0.0.1:5000/updatecam/1
 Content-Type: application/json
 
 {
@@ -42,3 +37,14 @@ Content-Type: application/json
     "name": "Sai Home Camera 1",
     "url": "https://www.youtube.com/watch?v=txZATEyGVpA"
 }
+
+### Update Monitoring Camera
+PUT http://127.0.0.1:5000/updatecam/1
+Content-Type: application/json
+
+{
+    "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo"
+}
+
+### Get all transcripts by camera id
+GET http://127.0.0.1:5000/transcripts/1
