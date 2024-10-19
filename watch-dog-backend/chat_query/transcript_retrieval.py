@@ -9,8 +9,16 @@ from huggingface_hub import login, HfFolder, snapshot_download
 from transformers import AutoModel, AutoTokenizer
 from sentence_transformers import SentenceTransformer, util
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AutoModelForCausalLM
+from openai import OpenAI
+import os
 
 app = Flask(__name__)
+
+url = 'https://api.aimlapi.com/v1/chat/completions'
+headers = {
+        'Authorization': 'Bearer 998a55b3796e43c49543ae8aaee934ee',
+        'Content-Type': 'application/json',
+    }
 
 # df= None
 model_name = "unsloth/Llama-3.2-1B-Instruct"
@@ -111,7 +119,29 @@ def generate_response(query, df):
     # Tokenize and generate the response
     inputs = llm_tokenizer(combined_prompt, return_tensors="pt", padding=True)
     print("Tokenization successful...")
-    outputs = llm_model.generate(**inputs, max_length=180, max_new_tokens=20, num_beams=1, temperature=0.2, top_p=0.7, no_repeat_ngram_size=2)
+
+    #Added AIML api
+    ############################################################################
+    client = OpenAI(
+    api_key="998a55b3796e43c49543ae8aaee934ee",
+    base_url="https://api.aimlapi.com",
+    )
+
+    response = client.chat.completions.create(
+        model="meta-llama/Llama-3.2-3B-Instruct-Turbo",
+        messages=[
+            {
+                "role": "user",
+                "content": f"{inputs}"
+            },
+        ],
+    )
+
+    outputs = response.choices[0].message.content
+    print(f"Assistant: {outputs}")
+    ############################################################################
+
+    #outputs = llm_model.generate(**inputs, max_length=180, max_new_tokens=20, num_beams=1, temperature=0.2, top_p=0.7, no_repeat_ngram_size=2)
     print("Generation successful...")
     decoded_output = llm_tokenizer.decode(outputs[0], skip_special_tokens=True)
     print("Decode successful...")
