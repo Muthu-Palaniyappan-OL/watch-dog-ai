@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 from flask_cors import CORS
 from dotenv import load_dotenv
+from datetime import datetime
 
 
 load_dotenv()
@@ -80,6 +81,20 @@ class TranscriptDetailed(db.Model):
     camera = db.relationship(
         "Camera", backref=db.backref("transcripts_detailed", lazy=True)
     )
+
+
+class AnalyticsData(db.Model):
+    __tablename__ = "analytics_data"
+
+    camera_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    total_footage_analyzed = db.Column(db.Integer, nullable=False)
+    total_individuals_detected = db.Column(db.Integer, nullable=False)
+    average_human_passerbys_per_footage = db.Column(db.Float, nullable=False)
+    total_unusual_incidents = db.Column(db.Integer, nullable=False)
+    total_animal_incidents = db.Column(db.Integer, nullable=False)
+    total_unusual_crowd_incidents = db.Column(db.Integer, nullable=False)
+    total_vehicle_detected = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now(), nullable=False)
 
 
 def create_app():

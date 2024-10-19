@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { CAMS_API_URL } from '../../constants';
+import { PaperAirplaneIcon , InformationCircleIcon, ChatBubbleBottomCenterIcon} from '@heroicons/react/24/outline';
 
 
 import { ChevronDownIcon} from '@heroicons/react/24/outline'
@@ -25,10 +26,11 @@ const WatchDogChat: React.FC = () => {
   const [chatResponse, setChatResponse] = useState<string>(''); // Response from AI/Local Edge
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // Independent camera states for each chat mode
   const [selectedCamAIMLAPI, setSelectedCamAIMLAPI] = useState('');
   const [selectedCamLocalEdge, setSelectedCamLocalEdge] = useState('')
   
+  const inputRef = useRef<HTMLTextAreaElement | null>(null); 
+
   // Fetch cameras from the API on component mount
   useEffect(() => {
     const fetchCameras = async () => {
@@ -55,17 +57,31 @@ const WatchDogChat: React.FC = () => {
 
   // Handle chat input
   const handleChatInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only update state if necessary to avoid excessive renders
     setChatInput(e.target.value);
   };
+  
 
   
   const sendChatRequest = () => {
-    const newResponse = 'Your response here'; // Replace with actual response
-    setChatHistory((prev) => ({
-      ...prev,
-      [activeChat]: [...prev[activeChat], { input: chatInput, response: newResponse }]
-    }));
-    setChatInput('');
+    if (inputRef.current) {
+      const inputMessage = inputRef.current.value; // Get value from inputRef
+      if (inputMessage.trim() === '') {
+        return; // Abort if input is empty or only whitespace
+      }
+      const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      const newResponse = 'Your response here'; // Replace with actual response
+  
+      // Update chat history for the active chat
+      setChatHistory((prev) => ({
+        ...prev,
+        [activeChat]: [...prev[activeChat], { input: inputMessage, response: newResponse, time: currentTime }]
+      }));
+  
+      // Clear the input field
+      inputRef.current.value = '';
+    }
   };
 
 
@@ -86,7 +102,8 @@ const WatchDogChat: React.FC = () => {
             </button>
   
             {dropdownOpen && (
-              <div className="z-10 absolute right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
+              <div className={`z-10 absolute ${activeChat === 'AIMLAPI' ? 'left-0' : 'right-0'} 
+               mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700`}>
                 <ul className="py-2 text-sm text-gray-400 dark:text-gray-200" aria-labelledby="dropdownHoverButton">
                   {cameras.map((camera, index) => (
                     <li key={index}>
@@ -104,36 +121,91 @@ const WatchDogChat: React.FC = () => {
           </div>
         </div>
   
-        {selectedCam && (
-          <>
-            <label htmlFor="chatInput" className="block text-sm font-medium text-gray-700">
-              Type your message:
-            </label>
-            <input
-              type="text"
-              id="chatInput"
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-sky-500 focus:border-sky-500"
-              value={chatInput}
-              onChange={handleChatInput}
-            />
-            <button
-              className="mt-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-              onClick={sendChatRequest}
-            >
-              Send
-            </button>
-          </>
-        )}
-  
-        {/* Display Chat History */}
-        {chatHistory.map((chat, index) => (
-          <div key={index} className="mt-4 p-4 bg-gray-100 border border-gray-300 rounded-md">
-            <h3 className="font-semibold">You:</h3>
-            <p>{chat.input}</p>
-            <h3 className="font-semibold">Response:</h3>
-            <p>{chat.response}</p>
+        
+
+        <div className="flex flex-col h-full ">
+          
+          <div className="flex-1 overflow-y-auto p-4 bg-gray-100 border border-gray-300 rounded-md max-h-96 min-h-96">
+            {!selectedCam && (
+              <div className="flex items-center justify-center h-full mt-[10%]">
+                <InformationCircleIcon className="h-10 w-10 text-gray-500 mx-2" />
+                <p className="text-2xl font-semibold text-gray-500">Select a Camera, to start a query!</p>
+              </div>
+            )}
+            {selectedCam && chatHistory.length === 0 && (
+              <div className="flex items-center justify-center h-full mt-[10%]">
+                <ChatBubbleBottomCenterIcon className="h-10 w-10 text-gray-500 mx-2" />
+                <p className="text-2xl font-semibold text-gray-500">Start a conversation!</p>
+              </div>
+            )}
+            {chatHistory.map((chat, index) => (
+              <div key={index} className="mt-2">
+
+                {/* You - Sender Bubble */}
+                <div className="flex items-start gap-2.5 justify-end mt-2"> {/* Add mt-2 for spacing between messages */}
+                  <div className="flex flex-col gap-1  max-w-[70%]"> {/* Adjust max-width as needed */}
+                    <div className="flex items-center space-x-2"> 
+                      <span className="text-sm font-semibold text-gray-900">You</span> {/* Sender's Name */}
+                      <span className="text-sm font-normal text-gray-500">{chat.time}</span> {/* Timestamp */}
+                    </div>
+                    <div className="flex flex-col leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700">
+                      <p className="text-sm font-normal text-gray-900 dark:text-white">{chat.input}</p> {/* Message content */}
+                    </div>
+                    <span className="text-sm font-normal text-gray-500">Delivered</span> {/* Delivery status */}
+                  </div>
+                  <img className="w-8 h-8 rounded-full" src="/user.png" alt="Your image" /> {/* Profile image */}
+                </div>
+
+
+                {/* WatchDogAI - Response Bubble */}
+                <div className="flex items-start gap-2.5 mt-2">
+                  <img className="w-8 h-8 rounded-full" src="/watchdog.png" alt="WatchDogAI image" />
+                  <div className="flex flex-col gap-1 max-w-[70%]">
+                    <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                      <span className="text-sm font-bold text-gray-900 ">WatchDogAI</span>
+                      <span className="text-sm font-normal text-gray-500 ">{chat.time}</span>
+                    </div>
+                    <div className="flex flex-col leading-1.5 p-4 border-gray-200 bg-sky-500 rounded-e-xl rounded-es-xl ">
+                      <p className="text-sm font-semibold text-white ">{chat.response}</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            ))}
           </div>
-        ))}
+
+
+          {/* Input Area */}
+          {selectedCam && (
+            <div className="flex items-center space-x-2 my-2">
+              <textarea
+                id="chatInput"
+                ref={inputRef} // Use ref to access input value
+                className="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-sky-500 focus:border-sky-500 resize-none max-h-[100px] overflow-auto"
+                placeholder="Ask your query here..."
+                rows={3} // Start with one visible row
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) { // Check for Enter without Shift
+                    e.preventDefault(); // Prevent new line
+                    sendChatRequest(); // Trigger send when Enter is pressed
+                  }
+                }}
+              />
+
+            
+              <button
+                className="px-4 py-5 text-lg font-bold bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center"
+                onClick={sendChatRequest}
+              >
+                Send
+                <PaperAirplaneIcon className="h-5 w-5 ml-2" aria-hidden="true" />
+              </button>
+            </div>
+          )}
+        </div>
+
+
       </div>
     );
   };

@@ -258,5 +258,34 @@ def get_all_transcripts(camera_id):
     )
 
 
+@app.get("/transcripts/<string:activity_name>/")
+@app.get("/transcripts/<string:activity_name>/<int:camera_id>")
+def activity_name(activity_name, camera_id=None):
+
+    query = TranscriptDetailed.query.with_entities(
+        TranscriptDetailed.frame_number, getattr(TranscriptDetailed, activity_name)
+    )
+
+    # If camera_id is provided, filter by that camera_id
+    if camera_id is not None:
+        query = query.filter_by(camera_id=camera_id).filter(
+            getattr(TranscriptDetailed, activity_name) != "none"
+        )
+
+    # Fetch all matching records
+    data = query.all()
+
+    # Return the JSON response with dynamic field name
+    return jsonify(
+        [
+            {
+                "frame_number": d.frame_number,
+                activity_name: getattr(d, activity_name),
+            }
+            for d in data
+        ]
+    )
+
+
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=False)
