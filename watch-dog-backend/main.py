@@ -114,6 +114,24 @@ def change():
     return jsonify({"message": f"Stream changed to URL: {stream_url}"}), 200
 
 
+@app.get("/getcams")
+def cameras():
+    return jsonify(
+        [
+            {
+                "name": "Camera 1",
+                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
+                "live": True,
+            },
+            {
+                "name": "Camera 2",
+                "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
+                "live": False,
+            },
+        ]
+    )
+
+
 if __name__ == "__main__":
     # Start the Flask app in main thread
     app.run(debug=True, use_reloader=False)
