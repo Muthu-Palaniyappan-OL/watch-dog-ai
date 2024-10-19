@@ -4,6 +4,7 @@ import CCTVView from './CCTVView/CCTVView';
 import ManageCamera from './ManageCamera/ManageCamera';
 import WatchDogChat from './WatchDogChat/WatchDogChat';
 import Analytics from './Analytics/Analytics';
+import FetchAllTranscripts from './FetchAllTranscripts/FetchAllTranscripts';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
@@ -18,6 +19,7 @@ const navigation = [
   { name: 'Manage Cameras', href: '/dashboard/manage-camera'},
   { name: 'WatchDog Chat', href: '/dashboard/watchdog-chat'},
   { name: 'Analytics', href: '/dashboard/analytics'},
+  { name: 'Fetch All Transcripts', href: '/dashboard/fetch-all-transcripts'},
 ]
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
@@ -181,6 +183,7 @@ export default function Dashboard() {
               <Route path="manage-camera" element={<ManageCamera />} />
               <Route path="watchdog-chat" element={<WatchDogChat />} />
               <Route path="analytics" element={<Analytics />} />
+              <Route path="fetch-all-transcripts" element={<FetchAllTranscripts />} />
             </Routes>
           </div>
         </main>

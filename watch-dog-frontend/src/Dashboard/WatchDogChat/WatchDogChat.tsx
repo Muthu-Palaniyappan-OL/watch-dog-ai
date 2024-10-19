@@ -20,12 +20,14 @@ const WatchDogChat: React.FC = () => {
     LocalEdge: []
   });
   const [cameras, setCameras] = useState<Camera[]>([]);
-  const [selectedCam, setSelectedCam] = useState<string>(''); // State for selected camera
   const [activeChat, setActiveChat] = useState<'AIMLAPI' | 'LocalEdge'>('AIMLAPI'); // Toggle between chats
   const [chatInput, setChatInput] = useState<string>(''); // Chat input state
   const [chatResponse, setChatResponse] = useState<string>(''); // Response from AI/Local Edge
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  // Independent camera states for each chat mode
+  const [selectedCamAIMLAPI, setSelectedCamAIMLAPI] = useState('');
+  const [selectedCamLocalEdge, setSelectedCamLocalEdge] = useState('')
   
   // Fetch cameras from the API on component mount
   useEffect(() => {
@@ -41,9 +43,13 @@ const WatchDogChat: React.FC = () => {
   }, []);
 
   // Handle camera selection
-  const handleCameraSelection = (cameraName: string) => {
-    setSelectedCam(cameraName);
-    setDropdownOpen(false); // Close the dropdown after selection
+  const handleCameraSelection = (name) => {
+    if (activeChat === 'AIMLAPI') {
+      setSelectedCamAIMLAPI(name);
+    } else {
+      setSelectedCamLocalEdge(name);
+    }
+    setDropdownOpen(false);
   };
 
 
@@ -52,32 +58,9 @@ const WatchDogChat: React.FC = () => {
     setChatInput(e.target.value);
   };
 
-  // Simulate sending a chat request
-  const sendChatRequest = async () => {
-    if (!selectedCam) {
-      alert('Please select a camera first');
-      return;
-    }
-
-    const endpoint =
-      activeChat === 'AIMLAPI' ? 'AIML_API_ENDPOINT' : 'LOCAL_EDGE_ENDPOINT';
-
-    try {
-      const response = await axios.post(endpoint, {
-        camera: selectedCam,
-        message: chatInput,
-      });
-      setChatResponse(response.data.response); // Assuming the response has a 'response' field
-    } catch (error) {
-      console.error('Error sending chat request:', error);
-    }
-  };
-
-  const sendChatRequestNew = () => {
-    // Logic to send chat request
-    // Update chat history accordingly
+  
+  const sendChatRequest = () => {
     const newResponse = 'Your response here'; // Replace with actual response
-    setChatResponse(newResponse);
     setChatHistory((prev) => ({
       ...prev,
       [activeChat]: [...prev[activeChat], { input: chatInput, response: newResponse }]
@@ -85,6 +68,77 @@ const WatchDogChat: React.FC = () => {
     setChatInput('');
   };
 
+
+  const ChatBox = ({ chatHistory, selectedCam, setDropdownOpen, handleCameraSelection, chatInput, handleChatInput, sendChatRequest, dropdownOpen, cameras }) => {
+    return (
+      <div className="mt-4">
+        {/* Camera Selection Dropdown */}
+        <div className={`mb-4 mt-5 flex ${activeChat === 'AIMLAPI' ? 'justify-start' : 'justify-end'}`}>
+          <div className="relative inline-block text-left">
+            <button
+              id="dropdownHoverButton"
+              onClick={() => setDropdownOpen(!dropdownOpen)} 
+              className="text-white bg-sky-500 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
+              type="button"
+            >
+              {selectedCam ? selectedCam : "Select Camera"}
+              <ChevronDownIcon className="h-4 w-4 ml-2" aria-hidden="true" />
+            </button>
+  
+            {dropdownOpen && (
+              <div className="z-10 absolute right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
+                <ul className="py-2 text-sm text-gray-400 dark:text-gray-200" aria-labelledby="dropdownHoverButton">
+                  {cameras.map((camera, index) => (
+                    <li key={index}>
+                      <a
+                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        onClick={() => handleCameraSelection(camera.name)}
+                      >
+                        {camera.name} {camera.live ? '(Live)' : '(Offline)'}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+  
+        {selectedCam && (
+          <>
+            <label htmlFor="chatInput" className="block text-sm font-medium text-gray-700">
+              Type your message:
+            </label>
+            <input
+              type="text"
+              id="chatInput"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-sky-500 focus:border-sky-500"
+              value={chatInput}
+              onChange={handleChatInput}
+            />
+            <button
+              className="mt-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+              onClick={sendChatRequest}
+            >
+              Send
+            </button>
+          </>
+        )}
+  
+        {/* Display Chat History */}
+        {chatHistory.map((chat, index) => (
+          <div key={index} className="mt-4 p-4 bg-gray-100 border border-gray-300 rounded-md">
+            <h3 className="font-semibold">You:</h3>
+            <p>{chat.input}</p>
+            <h3 className="font-semibold">Response:</h3>
+            <p>{chat.response}</p>
+          </div>
+        ))}
+      </div>
+    );
+  };
+  
+  
   return (
     <div className="">
       
@@ -100,16 +154,17 @@ const WatchDogChat: React.FC = () => {
               }`}
               onClick={() => setActiveChat('AIMLAPI')}
             >
-              <img src="\AI_ML_API_Logo.svg" alt="AI / ML API" className="h-6 mr-2" />
+              <img src="\AI_ML_API_Logo.svg" alt="AI / ML API" className={` mr-3 
+              ${activeChat === 'AIMLAPI' ? 'h-7 ' : ' h-6' }`} />
               Powered Chat
             </button>
           </li>
           <li className="w-1/2">
             <button
-              className={`flex items-center justify-center w-full h-12 border-b-2 rounded-t-lg text-lg ${
+              className={`flex items-center justify-center w-full h-12 border-b-2 rounded-t-lg  ${
                 activeChat === 'LocalEdge'
-                  ? 'text-sky-500 border-sky-500 font-bold'
-                  : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'
+                  ? 'text-sky-500 border-sky-500 font-bold text-xl'
+                  : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 text-lg'
               }`}
               onClick={() => setActiveChat('LocalEdge')}
             >
@@ -120,81 +175,49 @@ const WatchDogChat: React.FC = () => {
       </div>
 
 
-
       
-
-
-
-      
-
-      
-      {/* Camera Selection Dropdown */}
-      <div className="mb-4 mt-5 flex justify-center">
-        <div className="relative inline-block text-left">
-          <button
-            id="dropdownHoverButton"
-            onClick={() => setDropdownOpen(!dropdownOpen)} 
-            className="text-white bg-sky-500 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
-            type="button"
-          >
-            {selectedCam ? selectedCam : "Select Camera"}
-            <ChevronDownIcon className="h-4 w-4 ml-2" aria-hidden="true" />
-            
-          </button>
-
-          {dropdownOpen && (
-            <div className="z-10 absolute right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
-              <ul className="py-2 text-sm text-gray-400 dark:text-gray-200" aria-labelledby="dropdownHoverButton">
-                
-                {cameras.map((camera, index) => (
-                  <li key={index}>
-                    <a
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      onClick={() => handleCameraSelection(camera.name)}
-                    >
-                      {camera.name} {camera.live ? '(Live)' : '(Offline)'}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+      <div className={`transition-all duration-500 ease-in-out ${activeChat === 'AIMLAPI' ? 'block' : 'hidden'}`}>
+        <ChatBox 
+          chatHistory={chatHistory['AIMLAPI']} 
+          selectedCam={selectedCamAIMLAPI}
+          setDropdownOpen={setDropdownOpen}
+          handleCameraSelection={handleCameraSelection}
+          chatInput={chatInput} 
+          handleChatInput={handleChatInput} 
+          sendChatRequest={sendChatRequest} 
+          dropdownOpen={dropdownOpen} 
+          cameras={cameras}
+        />
       </div>
 
-      {/* Chat Box */}
-      {selectedCam && (
-        <div className="mt-4">
-          <label htmlFor="chatInput" className="block text-sm font-medium text-gray-700">
-            Type your message:
-          </label>
-          <input
-            type="text"
-            id="chatInput"
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-sky-500 focus:border-sky-500"
-            value={chatInput}
-            onChange={handleChatInput}
-          />
-          <button
-            className="mt-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-            onClick={sendChatRequest}
-          >
-            Send
-          </button>
-        </div>
-      )}
+      <div className={`transition-all duration-500 ease-in-out ${activeChat === 'LocalEdge' ? 'block' : 'hidden'}`}>
+      <ChatBox 
+          chatHistory={chatHistory['LocalEdge']} 
+          selectedCam={selectedCamLocalEdge}
+          setDropdownOpen={setDropdownOpen}
+          handleCameraSelection={handleCameraSelection}
+          chatInput={chatInput} 
+          handleChatInput={handleChatInput} 
+          sendChatRequest={sendChatRequest} 
+          dropdownOpen={dropdownOpen} 
+          cameras={cameras}
+        />
+      </div>
 
-      {/* Chat Response */}
-      {chatResponse && (
-        <div className="mt-4 p-4 bg-gray-100 border border-gray-300 rounded-md">
-          <h3 className="font-semibold">Response:</h3>
-          <p>{chatResponse}</p>
-        </div>
-      )}
+
+
+
     </div>
 
 
   );
+
+
 };
+
+
+
+
+
 
 export default WatchDogChat;
