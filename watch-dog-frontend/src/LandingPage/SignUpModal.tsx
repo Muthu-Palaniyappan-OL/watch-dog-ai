@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline'; // Import Heroicons for the close icon
+import { useNavigate } from 'react-router-dom';
 
 
 const SignUpModal = ({ onClose }: { onClose: () => void }) => {
@@ -7,18 +8,19 @@ const SignUpModal = ({ onClose }: { onClose: () => void }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
+  const navigate = useNavigate()
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // Static validation for username and password
     if (username === 'admin' && password === 'admin') {
-      setSuccess('Successful Sign Up!');
+      setSuccess('Successful Sign In ! redirecting to dashboard');
       
       // Close the modal after 3 seconds
       setTimeout(() => {
         setError(''); // Clear the message
         onClose(); // Close the modal
+        navigate('/dashboard');
       }, 2000);
       // Here, you can handle successful sign-up logic (e.g., API call, close modal, etc.)
     } else {
@@ -72,7 +74,7 @@ const SignUpModal = ({ onClose }: { onClose: () => void }) => {
             type="submit"
             className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200 w-full"
           >
-            Sign Up
+            Sign In
           </button>
         </form>
       </div>
