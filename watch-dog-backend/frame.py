@@ -3,7 +3,6 @@ import numpy as np
 from scenedetect import SceneManager, FrameTimecode
 from scenedetect.detectors import HashDetector
 from vision import get_caption
-
 # Initialize SceneManager and ContentDetector globally
 scene_manager = SceneManager()
 scene_manager.add_detector(HashDetector(threshold=0.08))
