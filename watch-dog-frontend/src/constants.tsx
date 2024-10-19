@@ -1,0 +1,2 @@
+// src/constants.ts
+export const CAMS_API_URL = 'http://127.0.0.1:5000/getcams';

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import YouTube from 'react-youtube';
 import axios from 'axios';
-
-const CAMS_API_URL = 'http://127.0.0.1:5000/getcams';
+import { CAMS_API_URL } from '../../constants';
 
 
 interface Camera {
