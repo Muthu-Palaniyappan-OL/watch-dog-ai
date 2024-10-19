@@ -97,6 +97,26 @@ class AnalyticsData(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now(), nullable=False)
 
 
+class Alert(db.Model):
+    __tablename__ = "alerts"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    camera_id = db.Column(db.Integer, nullable=False)  # Reference to the camera
+    alert_type = db.Column(db.Text, nullable=False)  # Type of alert
+    description = db.Column(
+        db.Text, nullable=False
+    )  # Detailed description of the alert
+    timestamp = db.Column(
+        db.DateTime, default=datetime.utcnow, nullable=False
+    )  # When the alert was generated
+    status = db.Column(
+        db.Text, default="unacknowledged", nullable=False
+    )  # Status of the alert
+    frame_number = db.Column(
+        db.Integer, nullable=False
+    )  # Frame number associated with the alert
+
+
 def create_app():
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
