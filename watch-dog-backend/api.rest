@@ -6,7 +6,7 @@ POST http://127.0.0.1:5000/start
 Content-Type: application/json
 
 {
-    "url": "https://www.youtube.com/live/txZATEyGVpA"
+    "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo"
 }
 
 ### STOP STREAM
