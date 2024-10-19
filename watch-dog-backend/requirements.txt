@@ -4,3 +4,4 @@ setuptools
 opencv-python
 pytube
 yt_dlp
+flask-cors

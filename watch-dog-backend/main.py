@@ -4,8 +4,10 @@ import time
 from vidgear.gears import CamGear
 from frame import process_a_frame
 import cv2
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, origins=["*"])
 
 # Global Variables
 stream = None
