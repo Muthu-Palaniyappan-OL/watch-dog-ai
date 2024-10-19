@@ -1,25 +1,18 @@
-from flask import Flask, request, jsonify, make_response
+import asyncio
+from flask import Flask, request, jsonify, make_response, current_app
 import threading
 import time
 from vidgear.gears import CamGear
 from frame import process_a_frame, test_process_image
 import cv2
-from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from dotenv import load_dotenv
+from vision import get_caption, image_path_to_image_b64
 import os
 from datetime import datetime
+from db import Camera, TranscriptDetailed
 
 # Load environment variables from .env file
-load_dotenv()
 
-app = Flask(__name__)
-CORS(app, origins=["*"])
-# Database connection details
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-db = SQLAlchemy(app)
 
 # Global Variables
 stream = None
@@ -28,65 +21,38 @@ streaming_thread = None
 stream_running = False
 stream_lock = threading.Lock()
 display_frame = True
+from db import db, app
 
 
-class Camera(db.Model):
-    __tablename__ = "cameras"
-
-    id = db.Column(db.Integer, primary_key=True)  # ID for the camera
-    name = db.Column(
-        db.String, unique=True, nullable=False
-    )  # Unique name for the camera
-    monitoring = db.Column(db.Boolean, nullable=False)  # Monitoring status
-    email = db.Column(db.String, nullable=False)  # Email associated with the camera
-    live = db.Column(db.Boolean, nullable=False)  # Live status
-    url = db.Column(db.String, nullable=False)  # URL of the camera
-    start_time = db.Column(db.DateTime, nullable=False)
-
-    def __repr__(self):
-        return f"<Camera {self.name}>"
-
-
-# Define the Transcript model
-class Transcript(db.Model):
-    __tablename__ = "transcripts"
-
-    id = db.Column(db.Integer, primary_key=True)  # Primary key
-    camera_id = db.Column(
-        db.Integer, db.ForeignKey("cameras.id"), nullable=False
-    )  # Foreign key to cameras
-    transcript = db.Column(db.Text, nullable=False)  # Transcript text
-
-    camera = db.relationship(
-        "Camera", backref="transcripts"
-    )  # Relationship with Camera
-
-    def __repr__(self):
-        return f"<Transcript for Camera ID {self.camera_id}>"
-
-
-with app.app_context():
-    db.create_all()
-
-
-def start_stream(url):
+def start_stream(url, camera_id):
     """Function to start the YouTube stream."""
     global stream, stream_running, display_frame
+
+    def run_event_loop(loop):
+        asyncio.set_event_loop(loop)
+        loop.run_forever()
+
+    loop = asyncio.new_event_loop()
+    t = threading.Thread(target=run_event_loop, args=(loop,))
+    t.start()
+
     stream = CamGear(source=url, stream_mode=True, logging=True).start()
     stream_running = True
     while stream_running:
         frame = stream.read()
         if frame is None:
             break
-        process_a_frame(frame)
+        process_a_frame(frame, loop, camera_id)
         if display_frame:
             cv2.imshow("Output Frame", frame)
         key = cv2.waitKey(15) & 0xFF
         if key == ord("q"):
             stop_stream()
+            t.join()
             break
     if display_frame:
         cv2.destroyAllWindows()
+        t.join()
 
 
 def stop_stream():
@@ -112,20 +78,21 @@ def stream_manager():
 @app.route("/start", methods=["POST"])
 def start():
     """API to start the stream."""
-    global stream_url, stream_running, streaming_thread
+    global stream_running, streaming_thread
+
+    camera = Camera.query.filter_by(monitoring=True).first()
+    if camera is None:
+        return jsonify({"error": "Nothing is monitoring ready."}), 400
 
     if stream_running:
         return jsonify({"error": "Stream is already running!"}), 400
 
-    data = request.json
-    url = data.get("url")
-    if not url:
-        return jsonify({"error": "Please provide a valid URL"}), 400
-
-    stream_url = url
+    stream_url = camera.url
 
     # Start streaming thread
-    streaming_thread = threading.Thread(target=start_stream, args=(stream_url,))
+    streaming_thread = threading.Thread(
+        target=start_stream, args=(stream_url, camera.id)
+    )
     streaming_thread.start()
 
     return jsonify({"message": f"Stream started with URL: {stream_url}"}), 200
@@ -269,6 +236,27 @@ def update_cam(camera_id):
         return error, 400
 
 
+@app.get("/transcripts/<int:camera_id>")
+def get_all_transcripts(camera_id):
+    return jsonify(
+        [
+            {
+                "frame_number": d.frame_number,
+                "unusual_activity": d.unusual_activity,
+                "human_activity": d.human_activity,
+                "animal_activity": d.animal_activity,
+                "time": d.time,
+                "unusual_crowd": d.unusual_crowd,
+                "lighting_conditions": d.lighting_conditions,
+                "vehicle_details": d.vehicle_details,
+                "number_of_individuals": d.number_of_individuals,
+                "object_presence": d.object_presence,
+                "context_notes": d.context_notes,
+            }
+            for d in TranscriptDetailed.query.filter_by(camera_id=camera_id).all()
+        ]
+    )
+
+
 if __name__ == "__main__":
-    # Start the Flask app in main thread
     app.run(debug=True, use_reloader=False)
