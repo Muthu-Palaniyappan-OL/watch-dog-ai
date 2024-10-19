@@ -2,12 +2,22 @@ from flask import Flask, request, jsonify
 import threading
 import time
 from vidgear.gears import CamGear
-from frame import process_a_frame
+from frame import process_a_frame,test_process_image
 import cv2
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+import os
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app, origins=["*"])
+# Database connection details
+app.config['SQLALCHEMY_DATABASE_URI'] =  os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 
 # Global Variables
 stream = None
@@ -90,6 +100,11 @@ def stop():
     stop_stream()
     return jsonify({"message": "Stream stopped!"}), 200
 
+@app.route("/process_image", methods=["POST"])
+def process_image():
+    """API to stop the stream."""
+    test_process_image("image.png")
+    return jsonify({"message": "image processed!"}), 200
 
 @app.route("/change", methods=["POST"])
 def change():
