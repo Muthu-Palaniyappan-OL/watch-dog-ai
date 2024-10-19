@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from scenedetect import SceneManager, FrameTimecode
 from scenedetect.detectors import HashDetector
-
+from vision import get_caption
 # Initialize SceneManager and ContentDetector globally
 scene_manager = SceneManager()
 scene_manager.add_detector(HashDetector(threshold=0.08))
@@ -24,3 +24,15 @@ def process_a_frame(frame):
     if new_scene_detected:
         cv2.imwrite(f"./frame/{frame_number}.jpg", frame)
         print(f"Scene change detected at frame {frame_number})")
+
+        # Compress the image (e.g., reduce quality to 80%)
+        compression_params = [cv2.IMWRITE_JPEG_QUALITY, 80]
+        compressed_frame_path = f"./frame/compressed_{frame_number}.jpg"
+        cv2.imwrite(compressed_frame_path, frame, compression_params)
+        # Call the get_caption function with the compressed image path
+        caption = get_caption(compressed_frame_path)
+        print(f"Caption for frame {frame_number}: {caption}")
+
+def test_process_image(image):
+    caption = get_caption(image)
+    print(f"Caption for frame {frame_number}: {caption}")
