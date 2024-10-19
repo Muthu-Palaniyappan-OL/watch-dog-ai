@@ -3,6 +3,7 @@ import SignUpModal from './SignUpModal';
 import { LockClosedIcon, VideoCameraIcon, BellAlertIcon, DocumentTextIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion';
 import Team from './Team';
+import VideoSection from './DemoVideo';
 
 
 const features = [
@@ -82,15 +83,15 @@ const LandingPage = () => {
               </button>
             </div>
             <div className="hidden lg:flex lg:gap-x-12">
-              <a href="#" className="text-lg font-semibold leading-6 text-stone-300 hover:text-sky-300">Product</a>
-              <a href="#Features" className="text-lg font-semibold leading-6 text-stone-300  hover:text-sky-300">Features</a>
-              <a href="#" className="text-lg font-semibold leading-6 text-stone-300  hover:text-sky-300">Marketplace</a>
+              <a href="#Features" className="text-lg font-semibold leading-6 text-stone-300 hover:text-sky-300">Features</a>
+              <a href="#team" className="text-lg font-semibold leading-6 text-stone-300  hover:text-sky-300">Team</a>
+              <a href="#demo" className="text-lg font-semibold leading-6 text-stone-300  hover:text-sky-300">Demo Video</a>
               <a href="#" className="text-lg font-semibold leading-6 text-stone-300  hover:text-sky-300">Company</a>
             </div>
             <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center space-x-2">
-            <a href="https://github.com/Muthu-Palaniyappan-OL/watch-dog-ai/" className="text-lg font-semibold leading-10 text-stone-300">
-              <span className="text-lg font-semibold leading-10 text-stone-300" aria-hidden="true">Check code</span>
-</a>
+              <a href="https://github.com/Muthu-Palaniyappan-OL/watch-dog-ai/" className="text-lg font-semibold leading-10 text-stone-300">
+                <span className="text-lg font-semibold leading-10 text-stone-300" aria-hidden="true">Check code</span>
+              </a>
               <a href="https://github.com/Muthu-Palaniyappan-OL/watch-dog-ai/" className="text-lg font-semibold leading-10 text-stone-300">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="h-6 w-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25" />
@@ -100,52 +101,52 @@ const LandingPage = () => {
 
           </nav>
           {isOpen && (
-        <div className="lg:hidden" role="dialog" aria-modal="true">
-          <div className="fixed inset-0 z-50 bg-black bg-opacity-50" onClick={closeMenu}></div>
-          <div className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-            <div className="flex items-center justify-between">
-              <a href="#" className="-m-1.5 p-1.5">
-                <img className="h-20 w-auto" src="./watchdog.svg" alt="Logo" />
-              </a>
-              <button type="button" onClick={closeMenu} className="-m-2.5 rounded-md p-2.5 text-gray-700">
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="mt-6 flow-root">
-              <div className="-my-6 divide-y divide-gray-500/10">
-                <div className="space-y-2 py-6">
-                  <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                    Product
+            <div className="lg:hidden" role="dialog" aria-modal="true">
+              <div className="fixed inset-0 z-50 bg-black bg-opacity-50" onClick={closeMenu}></div>
+              <div className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+                <div className="flex items-center justify-between">
+                  <a href="#" className="-m-1.5 p-1.5">
+                    <img className="h-20 w-auto" src="./watchdog.svg" alt="Logo" />
                   </a>
-                  <a href="#Features" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                    Features
-                  </a>
-                  <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                    Marketplace
-                  </a>
-                  <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                    Company
-                  </a>
+                  <button type="button" onClick={closeMenu} className="-m-2.5 rounded-md p-2.5 text-gray-700">
+                    <svg
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </div>
-                <div className="py-6">
-                  <a href="#" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                    Log in
-                  </a>
+                <div className="mt-6 flow-root">
+                  <div className="-my-6 divide-y divide-gray-500/10">
+                    <div className="space-y-2 py-6">
+                      <a href="#Features" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                        Features
+                      </a>
+                      <a href="#team" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                        Team
+                      </a>
+                      <a href="#video" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                        Demo Video
+                      </a>
+                      <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                        Company
+                      </a>
+                    </div>
+                    <div className="py-6">
+                      <a href="#" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                        Log in
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          )}
         </header>
         {isModalOpen && <SignUpModal onClose={closeModal} />}
         <div className="relative isolate px-6 pt-14 lg:px-8">
@@ -159,52 +160,52 @@ const LandingPage = () => {
           </div>
           <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
             <div className="text-center">
-            <motion.div ref={constraintsRef}>
-            <motion.img
-      className="absolute left-1/20 top-1/4 transform -translate-x-1/2 sm:w-48 w-32 lg:w-64 z-0"
-      drag
-      src="/doggo.png"
-      dragElastic={0} // No overshoot, snaps directly back
-      dragConstraints={{ left: -300, right: -10, top:-100, bottom:100 }}
-      dragTransition={{ bounceStiffness: 40, bounceDamping: 7 }}
-      animate={["initial"]}
-      variants={{
-        initial: {
-          y: [0, 10],
-          x: [-90, -80],
-          rotate: 5,
-          transition: {
-            delay: 1,
-            duration: 2,
-            repeat: Infinity,
-            repeatType: "reverse",
-          },
-        },
-      }}
-    />
+              <motion.div ref={constraintsRef}>
+                <motion.img
+                  className="absolute left-1/20 top-1/4 transform -translate-x-1/2 sm:w-48 w-32 lg:w-64 z-0"
+                  drag
+                  src="/doggo.png"
+                  dragElastic={0} // No overshoot, snaps directly back
+                  dragConstraints={{ left: -300, right: -10, top: -100, bottom: 100 }}
+                  dragTransition={{ bounceStiffness: 40, bounceDamping: 7 }}
+                  animate={["initial"]}
+                  variants={{
+                    initial: {
+                      y: [0, 10],
+                      x: [-90, -80],
+                      rotate: 5,
+                      transition: {
+                        delay: 1,
+                        duration: 2,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                      },
+                    },
+                  }}
+                />
               </motion.div>
-           
-
-             <div className='relative z-10'>
-             <h1 className="z-10 text-balance text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Revolutionize Your Security with WatchDog AI</h1>
-              <p className="mt-6 text-lg leading-8 text-gray-600">The Future of Surveillance: AI That Understands Your World</p>
-              <div className="mt-10 flex items-center justify-center gap-x-6">
-                <div>
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault(); // Prevent the default anchor behavior
-                      openModal();
-                    }}
-                    className="rounded-md bg-sky-400 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-                  >
-                    Get started
-                  </a>
 
 
-                </div> <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a>
+              <div className='relative z-10'>
+                <h1 className="z-10 text-balance text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Revolutionize Your Security with WatchDog AI</h1>
+                <p className="mt-6 text-lg leading-8 text-gray-600">The Future of Surveillance: AI That Understands Your World</p>
+                <div className="mt-10 flex items-center justify-center gap-x-6">
+                  <div>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent the default anchor behavior
+                        openModal();
+                      }}
+                      className="rounded-md bg-sky-400 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                    >
+                      Get started
+                    </a>
+
+
+                  </div> <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a>
+                </div>
               </div>
-             </div>
             </div>
           </div>
           <div className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
@@ -215,7 +216,7 @@ const LandingPage = () => {
               }}
             ></div>
           </div>
-        </div>    
+        </div>
 
       </div>
 
@@ -248,7 +249,13 @@ const LandingPage = () => {
         </div>
       </div>
 
-        <Team/>
+      <div id="team">
+        <Team />
+      </div>
+
+      <div id="demo">
+        <VideoSection />
+      </div>
 
     </div>
   );
