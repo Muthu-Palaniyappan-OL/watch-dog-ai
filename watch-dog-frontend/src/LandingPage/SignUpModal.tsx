@@ -42,7 +42,7 @@ const SignUpModal = ({ onClose }: { onClose: () => void }) => {
           <XMarkIcon className="h-6 w-6" aria-hidden="true" />
         </button>
 
-        <h2 className="text-2xl font-semibold text-center mb-4">Sign Up</h2>
+        <h2 className="text-2xl font-semibold text-center mb-4">Sign In</h2>
 
         {/* Centering the form */}
         <form className="flex flex-col items-center" onSubmit={handleSubmit}>

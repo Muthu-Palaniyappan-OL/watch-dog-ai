@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import SignUpModal from './SignUpModal';
 import { LockClosedIcon, VideoCameraIcon, BellAlertIcon, DocumentTextIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion';
+import Team from './Team';
 
 
 const features = [
@@ -214,7 +215,7 @@ const LandingPage = () => {
               }}
             ></div>
           </div>
-        </div>
+        </div>    
 
       </div>
 
@@ -247,6 +248,7 @@ const LandingPage = () => {
         </div>
       </div>
 
+        <Team/>
 
     </div>
   );
