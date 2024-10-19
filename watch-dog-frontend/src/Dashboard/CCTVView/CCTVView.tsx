@@ -9,6 +9,7 @@ interface Camera {
   live: boolean;
   name: string;
   url: string;
+  monitoringStatus: boolean;
 }
 
 const CCTVView: React.FC = () => {
@@ -34,7 +35,16 @@ const CCTVView: React.FC = () => {
     height: '100%', // Change height to 100%
     width: '100%', // Change width to 100%
     playerVars: {
-      autoplay: 1,
+      autoplay: 1, // Autoplay the video
+      controls: 0, // Disable video controls
+      showinfo: 0, // Hide video title and uploader
+      mute:1,
+      iv_load_policy: 3,
+      cc_load_policy:0,
+      disablekb:1,
+      rel:0,
+      //disable title and uploader
+      
     },
   };
 
@@ -42,7 +52,7 @@ const CCTVView: React.FC = () => {
   const renderCameras = () => {
     return cameras.slice(0, layout).map((camera, index) => (
       <div key={index} className=" h-full flex flex-col bg-indigo-400 relative"> {/* Add h-full and w-full */}
-        <h3 className="absolute top-2 left-2 z-50 flex justify-center bg-white text-center px-2">{camera.name} {camera.live ? '🔴 Live' : '⚫ Offline'}</h3>
+        <h3 className="absolute top-2 left-2 z-10 flex justify-center bg-white text-center px-2">{camera.name} {camera.live ? '🔴 Live' : '⚫ Offline'}</h3>
         <div className="flex-grow ">
           <YouTube className='h-full' videoId={getVideoId(camera.url)} opts={opts} />
         </div>
@@ -60,7 +70,7 @@ const CCTVView: React.FC = () => {
     <div  className="relative w-full h-screen bg-black pt-0">
       
 
-      <div  className="absolute top-5 right-4 z-50 flex justify-center rounded-md shadow-sm"
+      <div  className="absolute top-5 right-4 z-20 flex justify-center rounded-md shadow-sm"
      role="group">
         <button
           type="button" onClick={() => setLayout(1)}

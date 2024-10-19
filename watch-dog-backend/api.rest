@@ -11,3 +11,6 @@ Content-Type: application/json
 
 ### STOP STREAM
 POST http://127.0.0.1:5000/stop
+
+###
+POST http://127.0.0.1:5000/process_image
