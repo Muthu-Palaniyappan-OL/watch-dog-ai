@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
-const CAMS_API_URL = 'http://127.0.0.1:5000/getcams';
+import { CAMS_API_URL } from '../../constants';
 
 interface Camera {
   name: string;
@@ -13,6 +12,28 @@ interface Camera {
 
 const ManageCamera: React.FC = () => {
   const [cameras, setCameras] = useState<Camera[]>([]);
+
+
+  // Function to toggle monitoring status for a specific camera
+  const toggleMonitoring = (index: number) => {
+    setCameras((prevCameras) =>
+      prevCameras.map((camera, i) =>
+        i === index ? { ...camera, monitoringStatus: !camera.monitoringStatus } : camera
+      )
+    );
+  };
+
+  const handleAddCamera= () =>{
+    alert("Adding New Camera!");
+
+
+  };
+
+  const handleEditCamera=(camera: Camera) =>{
+    alert("Editing Details of "+camera.name);
+
+
+  };
 
   // Fetch cameras from the API
   useEffect(() => {
@@ -28,6 +49,7 @@ const ManageCamera: React.FC = () => {
     fetchCameras();
   }, []);
 
+
   return (
     <>
       <div className="flex justify-between items-center mb-4">
@@ -36,7 +58,7 @@ const ManageCamera: React.FC = () => {
         </h1>
         <button
           className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-
+          onClick={handleAddCamera} 
         >
           Add Camera
         </button>
@@ -81,9 +103,10 @@ const ManageCamera: React.FC = () => {
                   </button>
                 </td>
                 <td className="px-6 py-4">
-                <a type="button" href="#" className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-base px-5 py-2.5 text-center">
+                <button type="button" onClick={() =>handleEditCamera(camera)}
+                className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-base px-5 py-2.5 text-center">
                   Edit
-                  </a>
+                  </button>
                 </td>
               </tr>
             ))}
@@ -94,14 +117,7 @@ const ManageCamera: React.FC = () => {
     </>
   );
 
-  // Function to toggle monitoring status for a specific camera
-  const toggleMonitoring = (index: number) => {
-    setCameras((prevCameras) =>
-      prevCameras.map((camera, i) =>
-        i === index ? { ...camera, monitoringStatus: !camera.monitoringStatus } : camera
-      )
-    );
-  };
+  
 };
 
 export default ManageCamera;

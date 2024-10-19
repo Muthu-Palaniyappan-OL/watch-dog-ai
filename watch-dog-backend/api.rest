@@ -14,3 +14,31 @@ POST http://127.0.0.1:5000/stop
 
 ###
 POST http://127.0.0.1:5000/process_image
+
+###
+GET http://127.0.0.1:5000/getcams
+
+###
+POST http://127.0.0.1:5000/addcams
+Content-Type: application/json
+
+{
+    "email": "ksaisathish@gmail.com",
+    "live": true,
+    "monitoringStatus": false,
+    "name": "Sai Home Camera 1",
+    "url": "https://www.youtube.com/watch?v=txZATEyGVpA"
+}
+
+###
+PUT http://127.0.0.1:5000/updatecam
+Content-Type: application/json
+
+{
+    "id": 1,
+    "email": "ksaisathish@gmail.com",
+    "live": true,
+    "monitoringStatus": false,
+    "name": "Sai Home Camera 1",
+    "url": "https://www.youtube.com/watch?v=txZATEyGVpA"
+}
