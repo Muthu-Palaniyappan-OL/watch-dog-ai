@@ -6,7 +6,7 @@ import json
 def get_caption(image_path):
     invoke_url = "https://ai.api.nvidia.com/v1/gr/meta/llama-3.2-90b-vision-instruct/chat/completions"
     stream = False
-
+    api_token = os.getenv('NVIDIA_API_TOKEN')
     # Read the image and encode it to base64
     with open(image_path, "rb") as f:
         image_b64 = base64.b64encode(f.read()).decode()
@@ -15,7 +15,7 @@ def get_caption(image_path):
         "To upload larger images, use the assets API (see docs)"
     
     headers = {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer "+api_token,
         "Accept": "text/event-stream" if stream else "application/json"
     }
 
