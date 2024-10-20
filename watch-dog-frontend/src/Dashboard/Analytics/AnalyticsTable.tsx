@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Bar, Pie } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import { Tab } from '@headlessui/react';  // Import Tailwind Tabs
-import { FaUsers, FaCar, FaExclamationTriangle, FaDog, FaCrow, FaVideo } from "react-icons/fa"; // Importing relevant icons
+import {  FaCar, FaExclamationTriangle, FaDog, FaCrow, FaVideo } from "react-icons/fa"; // Importing relevant icons
 import { CAMS_API_URL, ANALYTICS_API_URL } from "../../constants";
 import axios from "axios";
 import { useToast } from "../../Toast/ToastContext";
@@ -36,12 +36,10 @@ function classNames(...classes: string[]) {
 
 const AnalyticsTable: React.FC = () => {
     // Example camId data
-    const camIds = ['Cam01', 'Cam02', 'Cam03'];
 
     const [cameras, setCameras] = useState<Camera[]>([]);
     const [selectedCam, setSelectedCam] = useState<Camera | null>(null);
 
-    const [selectedCamId, setSelectedCamId] = useState<string>(camIds[0]);
     const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
 
     const { addToast } = useToast();
