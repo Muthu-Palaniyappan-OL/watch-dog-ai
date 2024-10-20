@@ -128,32 +128,28 @@ def generate_response(query, df):
 
 # @app.route("/get_response", methods=['GET', 'POST'])
 def get_response_online(query, camera_id):
-    # raw_data = request.data.decode('utf-8')
-    # try:
-    #     json_data = request.get_json(force=True)
-    #     print(json_data)
-    # except Exception as e:
-    #     return jsonify({"error": "Invalid JSON", "message": str(e)}), 400
-
-    # camera_id = json_data["camera_id"]
-    # q = json_data["question"]
-
+    # Extract the query and camera ID (assuming they are provided correctly)
     camera_id = camera_id
     q = query
+
+    # Fetch the transcript data for the given camera_id
     transcript = get_transcripts(camera_id)
+
+    # Check if the transcript fetch was successful
     if not transcript[0]:
         return "Query service temporarily unavailable. Please try after sometime.", []
-        # return jsonify({'error': "Query service temporarily unavailable. Please try after sometime."}), 503
     else:
         df = transcript[1]
-        result = generate_response(q, df)
+        result, frame_list = generate_response(q, df)
+
+        # Handle the case when 'result' is a set
         if isinstance(result, set):
-            response = list(result)
-            
-        frame_list = result[1]
+            response = list(result)  # Convert set to list
+        else:
+            response = result  # Directly assign the result
+
         return response, frame_list
-        # return jsonify({'camera_id': camera_id, 'response': result[0], 'frame_number': frame_list}), 200
-    # return jsonify({result}), 200
+
 
 # if __name__ == '__main__':
 #     app.run(port="5050")

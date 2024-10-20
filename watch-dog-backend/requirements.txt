@@ -11,3 +11,10 @@ flask_sqlalchemy
 psycopg2
 Flask-SQLAlchemy
 psycopg2-binary
+pandas
+numpy
+huggingface_hub
+transformers
+openai
+torch
+sentence_transformers

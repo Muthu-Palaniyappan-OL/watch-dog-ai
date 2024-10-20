@@ -57,5 +57,12 @@ GET http://127.0.0.1:5000/transcripts/human_activity/1
 GET http://127.0.0.1:5000/alerts/1
 ### analytics
 GET http://127.0.0.1:5000/analytics
-### chat
+### get chat
 GET http://127.0.0.1:5000/chat/1
+### chat
+POST http://127.0.0.1:5000/chat/3
+Content-Type: application/json
+
+{
+    "user_query": "can i see humans in the frames?"
+}

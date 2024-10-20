@@ -8,8 +8,10 @@ import cv2
 from flask_sqlalchemy import SQLAlchemy
 from vision import get_caption, image_path_to_image_b64
 import os
+import base64
 from datetime import datetime
 from db import Camera, TranscriptDetailed, Alert, AnalyticsData, Chats
+from chat_query.chat_online import get_response_online
 
 # Load environment variables from .env file
 
@@ -371,14 +373,17 @@ def chat_history(camera_id=None):
     )
 
 
+def image_path_to_image_b64(image_path):
+    with open(image_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+
 @app.post("/chat/<int:camera_id>")
 def chat(camera_id=None):
     data = request.json
-    user_query = data.user_query
+    user_query = data["user_query"]
 
-    response = ""
-    frame_numbers = [0]
-    # response, frame_numbers = chat(user_query, camera_id)
+    response, frame_numbers = get_response_online(user_query, camera_id)
 
     chat = Chats()
     chat.camera_id = camera_id
@@ -388,7 +393,17 @@ def chat(camera_id=None):
     db.session.add(chat)
     db.session.commit()
 
-    return {"response": response, frame_numbers: frame_numbers}
+    return {
+        "response": response,
+        "frames": [],
+    }
+    # return {
+    #     "response": response,
+    #     "frames": [
+    #         image_path_to_image_b64(f"./frames/{camera_id}/{f}.jpg")
+    #         for f in frame_numbers
+    #     ],
+    # }
 
 
 if __name__ == "__main__":
