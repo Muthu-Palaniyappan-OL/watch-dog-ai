@@ -5,3 +5,4 @@ export const TRANSCRIPTS_API_URL = 'http://127.0.0.1:5000/transcripts/';
 export const CHAT_API_URL = 'http://127.0.0.1:5200/chat/';
 export const LOCAL_CHAT_API_URL = 'http://127.0.0.1:5000/chat/';
 export const EDIT_CAM_API_URL= 'http://127.0.0.1:5000/updatecam/';
+export const ADD_CAM_API_URL= 'http://127.0.0.1:5000/addcams';

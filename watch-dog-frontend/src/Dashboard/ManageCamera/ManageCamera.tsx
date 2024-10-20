@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { CAMS_API_URL, EDIT_CAM_API_URL } from '../../constants';
+import { ADD_CAM_API_URL, CAMS_API_URL, EDIT_CAM_API_URL } from '../../constants';
 
 import { useToast } from "../../Toast/ToastContext";
 import { FaExclamationTriangle } from 'react-icons/fa';
 import EditCamera from './EditCamera';
 import { FcOk } from 'react-icons/fc';
+import AddCamera from './AddCamera';
 
 interface Camera {
   id:number;
@@ -19,6 +20,7 @@ interface Camera {
 const ManageCamera: React.FC = () => {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [editingCamera, setEditingCamera] = useState<Camera | null>(null);  // State to track editing camera
+  const [isAdding, setIsAdding] = useState<boolean>(false);  // State to manage add camera mode
   
   const { addToast } = useToast();
 
@@ -31,8 +33,8 @@ const ManageCamera: React.FC = () => {
     );
   };
 
-  const handleAddCamera= () =>{
-    alert("Adding New Camera!");
+  const handleAddCamera = () => {
+    setIsAdding(true);  // Open the Add Camera form
   };
 
   const handleEditCamera = (camera: Camera) => {
@@ -64,24 +66,52 @@ const ManageCamera: React.FC = () => {
       setEditingCamera(null);  // Exit edit mode
     }
   };
-  
+
+
+  const handleAddNewCamera = async (newCamera: Camera) => {
+    try {
+      const response = await axios.post(ADD_CAM_API_URL, newCamera, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        setCameras([...cameras, response.data]);  // Add the new camera to the list
+        addToast('New camera added successfully!', <FcOk />);
+        fetchCameras();
+      } else {
+        addToast('Failed to add new camera. Please try again.', <FaExclamationTriangle />);
+      }
+    } catch (error) {
+      console.error('Error adding new camera:', error);
+      addToast('Error adding new camera. Please try again later!', <FaExclamationTriangle />);
+    } finally {
+      setIsAdding(false);  // Exit add mode
+    }
+  };
+
+  const handleCancelAdd = () => {
+    setIsAdding(false);
+  };
+
 
   const handleCancelEdit = () => {
     setEditingCamera(null);  // Exit edit mode
   };
-
+  const fetchCameras = async () => {
+    try {
+      const response = await axios.get(CAMS_API_URL);
+      setCameras(response.data);
+      console.log('Cameras:', response.data);
+    } catch (error) {
+      console.error('Error fetching cameras:', error);
+      addToast('Error fetching cameras. Try again Later!', <FaExclamationTriangle />);
+    }
+  };
   // Fetch cameras from the API
   useEffect(() => {
-    const fetchCameras = async () => {
-      try {
-        const response = await axios.get(CAMS_API_URL);
-        setCameras(response.data);
-        console.log('Cameras:', response.data);
-      } catch (error) {
-        console.error('Error fetching cameras:', error);
-        addToast('Error fetching cameras. Try again Later!', <FaExclamationTriangle />);
-      }
-    };
+    
     fetchCameras();
   }, []);
 
@@ -93,6 +123,11 @@ const ManageCamera: React.FC = () => {
           camera={editingCamera}
           onSave={handleSaveCamera}
           onCancel={handleCancelEdit}
+        />
+      ) : isAdding ? (
+        <AddCamera
+          onSave={handleAddNewCamera}
+          onCancel={handleCancelAdd}
         />
       ) : (
         <div>
