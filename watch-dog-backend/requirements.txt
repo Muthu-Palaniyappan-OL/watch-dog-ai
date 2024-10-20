@@ -8,7 +8,7 @@ flask-cors
 scenedetect[opencv]
 python-dotenv
 flask_sqlalchemy
-psycopg2
+psycopg2-binary
 Flask-SQLAlchemy
 pandas
 numpy
