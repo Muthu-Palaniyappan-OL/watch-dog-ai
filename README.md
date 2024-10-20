@@ -6,6 +6,15 @@
 </p>
 <p align="center">
     <em>
+
+## DISCLAIMER ⚠️
+
+We currently lack support for live capturing due to resource constraints. However, we do support [CCTV Chat](https://watch-dog-ai.backend.stream/dashboard/watchdog-chat) functionality only with the **Sai Home Camera 1 (Live)**.
+
+Feel free to try our backend locally!
+
+---
+
 In today's world, security is a top priority for both individuals and organizations. Our project presents a smart surveillance solution that leverages the capabilities of artificial intelligence 🤖 and the Llama 3.2 90B Vision model 🦙 to revolutionize video monitoring. With a staggering market size of $54.42 billion 💰 and a CAGR of 8.5% 📈, the demand for advanced surveillance systems is higher than ever.
 
 Our system monitors live video feeds 🎥 in real time, utilizing cutting-edge AI algorithms to detect unusual activities and enhance security measures. We employ the Llama 3.2 90B Vision model through our AI/ML API, allowing us to analyze and interpret video data with remarkable precision. This integration empowers the system to effectively identify key activities, including unusual behavior 🚨, crowd density 👥, vehicle movement 🚗, and animal presence 🐾.
@@ -62,11 +71,9 @@ Together, we aim to redefine the standards of safety and surveillance 🔒 in a 
     - [ Prerequisites](#-prerequisites)
     - [ Installation](#-installation)
     - [ Usage](#-usage)
-    - [ Tests](#-tests)
-- [ Project Roadmap](#-project-roadmap)
-- [ Contributing](#-contributing)
+    - [ Architecture](#-architecture)
 - [ License](#-license)
-- [ Acknowledgments](#-acknowledgments)
+- [ Contributors](#-contributors)
 
 ---
 
@@ -124,3 +131,13 @@ Together, we aim to redefine the standards of safety and surveillance 🔒 in a 
         ├── tsconfig.json
         ├── tsconfig.node.json
         └── vite.config.ts
+```
+
+# Contributors
+
+<a href="https://github.com/Dineshrepostry"><img src="https://github.com/Dineshrepostry.png" title="ngryman" width="80" height="80"></a>
+<a href="https://github.com/jayenthsk"><img src="https://github.com/jayenthsk.png" title="ngryman" width="80" height="80"></a>
+<a href="https://github.com/Muthu-Palaniyappan-OL"><img src="https://github.com/Muthu-Palaniyappan-OL.png" title="Muthu" width="80" height="80"></a>
+<a href="https://github.com/ksaisathish"><img src="https://github.com/ksaisathish.png" title="Sai" width="80" height="80"></a>
+<a href="https://github.com/balajianbalagan"><img src="https://github.com/balajianbalagan.png" title="ngryman" width="80" height="80"></a>
+
