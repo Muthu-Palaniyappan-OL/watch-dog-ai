@@ -56,8 +56,7 @@ const WatchDogChat: React.FC = () => {
   }, []);
 
   // Handle camera selection
-  const handleCameraSelection = (camera) => {
-    const chatChanged = false;
+  const handleCameraSelection = async (camera) => {
     if (activeChat === 'AIMLAPI') {
       if(selectedCamAIMLAPI!=null &&  selectedCamAIMLAPI.id != camera.id){
         setChatHistory((prev) => ({
@@ -78,8 +77,50 @@ const WatchDogChat: React.FC = () => {
         }))
        };
       setSelectedCamLocalEdge(camera);
-
     }
+     
+    var chatUrl= activeChat === 'AIMLAPI' ? CHAT_API_URL : LOCAL_CHAT_API_URL;
+    
+    try {
+      const response = await fetch(chatUrl+`${camera.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        addToast('Failed to fetch chat history', <FaExclamationTriangle />);
+        throw new Error('Failed to fetch chat history');
+      }
+  
+      const data = await response.json();
+  
+      
+      setChatHistory((prev) => ({
+        ...prev,
+        [activeChat]: data.map((chat) => ({
+          input: chat.user_query,
+          response: chat.response,
+          sentTime: new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          receivedTime: new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          frames: chat.frames,
+          camera: camera, // Store the selected camera
+        })),
+      }));
+  
+      // Scroll to the bottom of the chat history
+      if (chatHistoryRef.current) {
+        chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
+      }
+  
+    } catch (error) {
+      addToast('Error fetching chat history', <FaExclamationTriangle />);
+      console.error('Error fetching chat history:', error);
+      // Optionally, trigger a toast notification to display the error
+    }
+  
+
     setDropdownOpen(false);
   };
 
@@ -294,7 +335,7 @@ const WatchDogChat: React.FC = () => {
                   <div className="flex flex-col gap-1 max-w-[70%]">
                     <div className="flex items-center space-x-2 rtl:space-x-reverse">
                       <span className="text-sm font-bold text-gray-900">WatchDogAI</span>
-                      <span className="text-sm font-normal text-gray-500">{chat.receivedTime ? '...' : chat.receivedTime}</span>
+                      <span className="text-sm font-normal text-gray-500">{chat.loading ? '...' : chat.receivedTime}</span>
                     </div>
                     <div className="flex flex-col leading-1.5 p-4 border-gray-200 bg-sky-500 rounded-e-xl rounded-es-xl">
                       <p className="text-sm font-semibold text-white">
