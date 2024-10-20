@@ -1,6 +1,6 @@
 // src/constants.ts
 
-export const API_URL = 'https://api.backend.stream/getcams'
+export const API_URL = 'https://api.backend.stream/'
 
 export const CAMS_API_URL = API_URL+'getcams';
 export const ANALYTICS_API_URL = API_URL+'analytics/';
