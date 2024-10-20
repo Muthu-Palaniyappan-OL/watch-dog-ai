@@ -265,7 +265,9 @@ def get_all_transcripts(camera_id):
 def activity_name(activity_name, camera_id=None):
 
     query = TranscriptDetailed.query.with_entities(
-        TranscriptDetailed.frame_number, getattr(TranscriptDetailed, activity_name)
+        TranscriptDetailed.frame_number,
+        getattr(TranscriptDetailed, activity_name),
+        TranscriptDetailed.context_notes,
     )
 
     # If camera_id is provided, filter by that camera_id
@@ -283,8 +285,7 @@ def activity_name(activity_name, camera_id=None):
             {
                 "frame_number": d.frame_number,
                 activity_name: getattr(d, activity_name),
-                context_notes: d.context_notes
-
+                "context_notes": d.context_notes,
             }
             for d in data
         ]
