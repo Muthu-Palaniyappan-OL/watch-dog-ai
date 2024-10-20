@@ -69,8 +69,7 @@ const AnalyticsTable: React.FC = () => {
             // Assuming the response data is an array and you want the first item
             if (response.data.length > 0) {
                 const data: AnalyticsData = response.data[0];
-                data.average_human_passerbys_per_footage = data.total_individuals_detected / data.total_footage_analyzed;
-                 // Adjust based on your response structure
+                data.average_human_passerbys_per_footage =Number((data.total_individuals_detected / data.total_footage_analyzed).toFixed(2)); // Adjust based on your response structure
                 setAnalyticsData(data);
             } else {
                 console.error('No analytics data found for this camera.');
