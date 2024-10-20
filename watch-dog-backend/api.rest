@@ -43,7 +43,8 @@ PUT http://127.0.0.1:5000/updatecam/1
 Content-Type: application/json
 
 {
-    "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo"
+    "url": "https://www.youtube.com/watch?v=IJSdhfsrnMo",
+    "email": "muthu892542@gmail.com"
 }
 
 ### Get all transcripts by camera id
@@ -51,3 +52,17 @@ GET http://127.0.0.1:5000/transcripts/1
 
 ### Get all transcripts by camera id
 GET http://127.0.0.1:5000/transcripts/human_activity/1
+
+### alerts
+GET http://127.0.0.1:5000/alerts/1
+### analytics
+GET http://127.0.0.1:5000/analytics
+### get chat
+GET http://127.0.0.1:5000/chat/1
+### chat
+POST http://127.0.0.1:5000/chat/3
+Content-Type: application/json
+
+{
+    "user_query": "can i see humans in the frames?"
+}

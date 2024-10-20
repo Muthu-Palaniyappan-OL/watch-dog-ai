@@ -8,8 +8,10 @@ import cv2
 from flask_sqlalchemy import SQLAlchemy
 from vision import get_caption, image_path_to_image_b64
 import os
+import base64
 from datetime import datetime
-from db import Camera, TranscriptDetailed
+from db import Camera, TranscriptDetailed, Alert, AnalyticsData, Chats
+from chat_query.chat_online import get_response_online
 
 # Load environment variables from .env file
 
@@ -285,6 +287,123 @@ def activity_name(activity_name, camera_id=None):
             for d in data
         ]
     )
+
+
+@app.get("/alerts/")
+@app.get("/alerts/<int:camera_id>")
+def alerts(camera_id=None):
+    query = Alert.query
+
+    # If camera_id is provided, filter by that camera_id
+    if camera_id is not None:
+        query = query.filter_by(camera_id=camera_id)
+
+    # Fetch all matching records
+    data = query.all()
+
+    # Return the JSON response with dynamic field name
+    return jsonify(
+        [
+            {
+                "camera_id": d.camera_id,
+                "frame_number": d.frame_number,
+                "alert_type": d.alert_type,
+                "description": d.description,
+                "timestamp": d.timestamp,
+                "status": d.status,
+            }
+            for d in data
+        ]
+    )
+
+
+@app.get("/analytics/")
+@app.get("/analytics/<int:camera_id>")
+def analytics(camera_id=None):
+    query = AnalyticsData.query
+
+    # If camera_id is provided, filter by that camera_id
+    if camera_id is not None:
+        query = query.filter_by(camera_id=camera_id)
+
+    # Fetch all matching records
+    data = query.all()
+
+    # Return the JSON response with dynamic field name
+    return jsonify(
+        [
+            {
+                "camera_id": d.camera_id,
+                "total_footage_analyzed": d.total_footage_analyzed,
+                "total_individuals_detected": d.total_individuals_detected,
+                "total_unusual_incidents": d.total_unusual_incidents,
+                "total_animal_incidents": d.total_animal_incidents,
+                "total_unusual_crowd_incidents": d.total_unusual_crowd_incidents,
+                "total_vehicle_detected": d.total_vehicle_detected,
+                "created_at": d.created_at,
+            }
+            for d in data
+        ]
+    )
+
+
+@app.get("/chat/<int:camera_id>")
+def chat_history(camera_id=None):
+    query = Chats.query
+
+    # If camera_id is provided, filter by that camera_id
+    if camera_id is not None:
+        query = query.filter_by(camera_id=camera_id)
+
+    # Fetch all matching records
+    data = query.all()
+
+    # Return the JSON response with dynamic field name
+    return jsonify(
+        [
+            {
+                "camera_id": d.camera_id,
+                "user_query": d.request,
+                "response": d.response,
+                "timestamp": d.timestamp,
+                "frames": d.frames,
+            }
+            for d in data
+        ]
+    )
+
+
+def image_path_to_image_b64(image_path):
+    with open(image_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+
+@app.post("/chat/<int:camera_id>")
+def chat(camera_id=None):
+    data = request.json
+    user_query = data["user_query"]
+
+    response, frame_numbers = get_response_online(user_query, camera_id)
+
+    chat = Chats()
+    chat.camera_id = camera_id
+    chat.request = user_query
+    chat.response = response
+    chat.frames = frame_numbers
+    db.session.add(chat)
+    db.session.commit()
+
+    return {
+        "response": response,
+        "frames": [],
+    }
+    # return {
+    #     "response": response,
+    #     "frames": [
+    #         image_path_to_image_b64(f"./frames/{camera_id}/{f}.jpg")
+    #         for f in frame_numbers
+    #     ],
+    # }
 
 
 if __name__ == "__main__":
