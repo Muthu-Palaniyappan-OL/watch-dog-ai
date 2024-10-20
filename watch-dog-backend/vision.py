@@ -177,7 +177,7 @@ def create_alert(cleaned_output, camera_id, frame_number):
             camera_id=camera_id,
             frame_number=frame_number,
             alert_type="Human Activity",
-            description=f"human_activity detected: {cleaned_output['unusual_activity']}",
+            description=f"human_activity detected: {cleaned_output['human_activity']}",
         )
         db.session.add(alert)
         alerts_list.append(alert.description)
