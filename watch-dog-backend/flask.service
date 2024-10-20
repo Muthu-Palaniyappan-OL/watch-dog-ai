@@ -1,0 +1,15 @@
+[Unit]
+Description=Flask App Service
+After=network.target
+
+[Service]
+User=ec2-user
+WorkingDirectory=~/watch-dog-ai/watch-dog-backend
+ExecStart=~/watch-dog-ai/watch-dog-backend/venv/bin/python ~/watch-dog-ai/watch-dog-backend/main.py
+Restart=always
+RestartSec=5
+Environment="PATH=/path/to/your/venv/bin"
+Environment="FLASK_ENV=production"
+
+[Install]
+WantedBy=multi-user.target
