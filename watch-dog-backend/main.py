@@ -369,7 +369,10 @@ def chat_history(camera_id=None):
                 "user_query": d.request,
                 "response": d.response,
                 "timestamp": d.timestamp,
-                "frames": d.frames,
+                "frames": [
+                            image_path_to_image_b64(f"./frames/{d.camera_id}/{f}.jpg")
+                            for f in d.frames
+                ],
             }
             for d in data
         ]
@@ -396,17 +399,17 @@ def chat(camera_id=None):
     db.session.add(chat)
     db.session.commit()
 
-    return {
-        "response": response,
-        "frames": [],
-    }
     # return {
     #     "response": response,
-    #     "frames": [
-    #         image_path_to_image_b64(f"./frames/{camera_id}/{f}.jpg")
-    #         for f in frame_numbers
-    #     ],
+    #     "frames": [],
     # }
+    return {
+        "response": response,
+        "frames": [
+            image_path_to_image_b64(f"./frames/{camera_id}/{f}.jpg")
+            for f in frame_numbers
+        ],
+    }
 
 
 if __name__ == "__main__":

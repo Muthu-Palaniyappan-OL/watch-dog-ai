@@ -118,7 +118,9 @@ const WatchDogChat: React.FC = () => {
           response: chat.response,
           sentTime: new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           receivedTime: new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          frames: chat.frames,
+          images: chat.frames || [],
+          imageCount: (chat.frames || []).length ,
+          loading: false,
           camera: camera, // Store the selected camera
         })),
       }));
@@ -342,7 +344,7 @@ const WatchDogChat: React.FC = () => {
                       <p className="text-sm font-normal text-gray-900 dark:text-white">{chat.input}</p>
                       
                       {chat.camera && (
-                        <p className="text-xs text-right text-sky-500"><b>Camera:</b> {chat.camera.id}</p>
+                        <p className="text-xs text-right text-sky-500"><b>Camera:</b> {chat.camera.id} </p>
                       )}
                     </div>
                     <span className="text-sm font-normal text-gray-500">Delivered</span>
@@ -368,6 +370,7 @@ const WatchDogChat: React.FC = () => {
                       {!chat.loading && chat.camera.id && (
                         <p className="text-xs text-left text-gray-500">
                           <b>Camera:</b> {chat.camera.id}
+                          <b>Image Count:</b> {chat.imageCount}
                         </p>
                       )}
 
@@ -378,12 +381,12 @@ const WatchDogChat: React.FC = () => {
                             <div key={index} className="group relative">
                               <div className="absolute w-full h-full bg-gray-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center">
                                 <button
-                                  onClick={() => downloadImage(image, selectedCam.name+`-image-${index + 1}.png`)} // Call the download function
+                                  onClick={() => downloadImage(`data:image/png;base64,${image}`, selectedCam.name+`-image-${index + 1}.png`)} // Call the download function
                                   className="inline-flex items-center justify-center rounded-full h-8 w-8 bg-white/30 hover:bg-white/50 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50">
                                   <ArrowDownTrayIcon className="h-5 w-5" aria-hidden="true" />
                                 </button>
                               </div>
-                              <img src={`${image}`} alt={`Image ${index + 1}`} className="rounded-lg h-full w-full" />
+                              <img src={`data:image/png;base64,${image}`} alt={`Image ${index + 1}`} className="rounded-lg h-full w-full" />
                             </div>
                           ))}
 
