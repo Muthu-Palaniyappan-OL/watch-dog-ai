@@ -385,6 +385,8 @@ def chat(camera_id=None):
     chat.request = user_query
     chat.response = response
     chat.frames = frame_numbers
+    db.session.add(chat)
+    db.session.commit()
 
     return {"response": response, frame_numbers: frame_numbers}
 
