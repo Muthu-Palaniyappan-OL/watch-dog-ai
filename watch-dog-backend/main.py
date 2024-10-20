@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from vision import get_caption, image_path_to_image_b64
 import os
 from datetime import datetime
-from db import Camera, TranscriptDetailed, Alert, AnalyticsData
+from db import Camera, TranscriptDetailed, Alert, AnalyticsData, Chats
 
 # Load environment variables from .env file
 
@@ -343,6 +343,50 @@ def analytics(camera_id=None):
             for d in data
         ]
     )
+
+
+@app.get("/chat/<int:camera_id>")
+def chat_history(camera_id=None):
+    query = Chats.query
+
+    # If camera_id is provided, filter by that camera_id
+    if camera_id is not None:
+        query = query.filter_by(camera_id=camera_id)
+
+    # Fetch all matching records
+    data = query.all()
+
+    # Return the JSON response with dynamic field name
+    return jsonify(
+        [
+            {
+                "camera_id": d.camera_id,
+                "user_query": d.request,
+                "response": d.response,
+                "timestamp": d.timestamp,
+                "frames": d.frames,
+            }
+            for d in data
+        ]
+    )
+
+
+@app.post("/chat/<int:camera_id>")
+def chat(camera_id=None):
+    data = request.json
+    user_query = data.user_query
+
+    response = ""
+    frame_numbers = [0]
+    # response, frame_numbers = chat(user_query, camera_id)
+
+    chat = Chats()
+    chat.camera_id = camera_id
+    chat.request = user_query
+    chat.response = response
+    chat.frames = frame_numbers
+
+    return {"response": response, frame_numbers: frame_numbers}
 
 
 if __name__ == "__main__":

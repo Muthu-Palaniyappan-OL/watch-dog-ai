@@ -107,7 +107,7 @@ class Alert(db.Model):
         db.Text, nullable=False
     )  # Detailed description of the alert
     timestamp = db.Column(
-        db.DateTime, default=datetime.utcnow, nullable=False
+        db.DateTime, default=datetime.now(), nullable=False
     )  # When the alert was generated
     status = db.Column(
         db.Text, default="unacknowledged", nullable=False
@@ -115,6 +115,20 @@ class Alert(db.Model):
     frame_number = db.Column(
         db.Integer, nullable=False
     )  # Frame number associated with the alert
+
+
+class Chats(db.Model):
+    __tablename__ = "chats"
+
+    id = db.Column(db.Integer, primary_key=True)
+    camera_id = db.Column(db.Integer, db.ForeignKey("cameras.id"), nullable=False)
+    request = db.Column(db.Text, nullable=False)
+    response = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    frames = db.Column(db.ARRAY(db.Integer))
+
+    def __repr__(self):
+        return f"<Chat {self.id}: {self.request}>"
 
 
 def create_app():
