@@ -21,7 +21,7 @@ const SignUpModal = ({ onClose }: { onClose: () => void }) => {
     setSuccess(''); // Clear previous success message
 
     // Static validation for username and password
-    if (username === 'admin' && password === 'admin') {
+    if (username === 'admin' && password === 'Pass@1234') {
       setSuccess('Successful Sign In ! Redirecting to dashboard');
       
       // Close the modal after 3 seconds

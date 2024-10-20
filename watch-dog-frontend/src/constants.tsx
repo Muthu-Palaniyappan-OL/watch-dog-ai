@@ -1,8 +1,11 @@
 // src/constants.ts
-export const CAMS_API_URL = 'http://127.0.0.1:5000/getcams';
-export const ANALYTICS_API_URL = 'http://127.0.0.1:5000/analytics/';
-export const TRANSCRIPTS_API_URL = 'http://127.0.0.1:5000/transcripts/';
-export const CHAT_API_URL = 'http://127.0.0.1:5200/chat/';
+
+export const API_URL = 'http://api.backend.stream:8080/'
+
+export const CAMS_API_URL = API_URL+'getcams';
+export const ANALYTICS_API_URL = API_URL+'analytics/';
+export const TRANSCRIPTS_API_URL = API_URL+'transcripts/';
+export const CHAT_API_URL = API_URL+'chat/';
 export const LOCAL_CHAT_API_URL = 'http://127.0.0.1:5000/chat/';
-export const EDIT_CAM_API_URL= 'http://127.0.0.1:5000/updatecam/';
-export const ADD_CAM_API_URL= 'http://127.0.0.1:5000/addcams';
+export const EDIT_CAM_API_URL= API_URL+'updatecam/';
+export const ADD_CAM_API_URL= API_URL+'addcams/';
