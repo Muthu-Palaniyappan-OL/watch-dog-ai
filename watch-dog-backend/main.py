@@ -409,4 +409,7 @@ def chat(camera_id=None):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
+    if os.getenv("ENV") == "production":
+        app.run(debug=False, port=os.getenv("PORT"))
+    else:
+        app.run(debug=True, use_reloader=False)
