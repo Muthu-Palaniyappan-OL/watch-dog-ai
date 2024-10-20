@@ -10,7 +10,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const user = {
   name: 'Admin',
-  email: 'tom@example.com',
+  email: 'ksaisathish@gmail.com',
   imageUrl:
     '/user.png',
 }
@@ -22,9 +22,7 @@ const navigation = [
   { name: 'Fetch All Transcripts', href: '/dashboard/fetch-all-transcripts'},
 ]
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
+  { name: 'Sign out', href: '/' },
 ]
 
 function classNames(...classes) {
