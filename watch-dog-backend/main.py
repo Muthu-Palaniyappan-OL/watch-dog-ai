@@ -283,6 +283,8 @@ def activity_name(activity_name, camera_id=None):
             {
                 "frame_number": d.frame_number,
                 activity_name: getattr(d, activity_name),
+                context_notes: d.context_notes
+
             }
             for d in data
         ]
