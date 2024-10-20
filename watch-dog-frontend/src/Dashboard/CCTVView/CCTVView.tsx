@@ -3,6 +3,9 @@ import YouTube from 'react-youtube';
 import axios from 'axios';
 import { CAMS_API_URL } from '../../constants';
 
+import { useToast } from "../../Toast/ToastContext";
+import { FaExclamationTriangle } from 'react-icons/fa';
+
 
 interface Camera {
   live: boolean;
@@ -14,6 +17,8 @@ interface Camera {
 const CCTVView: React.FC = () => {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [layout, setLayout] = useState(4); // 1, 4, or 9 boxes layout
+  
+  const { addToast } = useToast();
 
   // Fetch cameras from the API
   useEffect(() => {
@@ -24,6 +29,7 @@ const CCTVView: React.FC = () => {
         console.log('Cameras:', response.data);
       } catch (error) {
         console.error('Error fetching cameras:', error);
+        addToast('Error fetching cameras. Try again Later!', <FaExclamationTriangle />);
       }
     };
     fetchCameras();

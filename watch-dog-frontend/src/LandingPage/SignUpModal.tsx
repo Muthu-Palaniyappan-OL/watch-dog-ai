@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline'; // Import Heroicons for the close icon
 import { useNavigate } from 'react-router-dom';
+import {FaExclamationTriangle} from 'react-icons/fa';
+import { useToast } from '../Toast/ToastContext';
 
 
 const SignUpModal = ({ onClose }: { onClose: () => void }) => {
@@ -9,12 +11,18 @@ const SignUpModal = ({ onClose }: { onClose: () => void }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate()
+
+  const { addToast} = useToast();
+
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError(''); // Clear previous error message
+    setSuccess(''); // Clear previous success message
 
     // Static validation for username and password
     if (username === 'admin' && password === 'admin') {
-      setSuccess('Successful Sign In ! redirecting to dashboard');
+      setSuccess('Successful Sign In ! Redirecting to dashboard');
       
       // Close the modal after 3 seconds
       setTimeout(() => {
@@ -24,7 +32,10 @@ const SignUpModal = ({ onClose }: { onClose: () => void }) => {
       }, 2000);
       // Here, you can handle successful sign-up logic (e.g., API call, close modal, etc.)
     } else {
+
       setError('Invalid username or password. Please try again.');
+      addToast('Invalid username or password. Please try again.', <FaExclamationTriangle />);
+
     }
   };
 

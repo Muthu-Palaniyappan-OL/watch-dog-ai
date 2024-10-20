@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { CAMS_API_URL } from '../../constants';
 
+import { useToast } from "../../Toast/ToastContext";
+import { FaExclamationTriangle } from 'react-icons/fa';
+
 interface Camera {
   name: string;
   url: string;
@@ -12,7 +15,8 @@ interface Camera {
 
 const ManageCamera: React.FC = () => {
   const [cameras, setCameras] = useState<Camera[]>([]);
-
+  
+  const { addToast } = useToast();
 
   // Function to toggle monitoring status for a specific camera
   const toggleMonitoring = (index: number) => {
@@ -25,14 +29,10 @@ const ManageCamera: React.FC = () => {
 
   const handleAddCamera= () =>{
     alert("Adding New Camera!");
-
-
   };
 
   const handleEditCamera=(camera: Camera) =>{
     alert("Editing Details of "+camera.name);
-
-
   };
 
   // Fetch cameras from the API
@@ -44,6 +44,7 @@ const ManageCamera: React.FC = () => {
         console.log('Cameras:', response.data);
       } catch (error) {
         console.error('Error fetching cameras:', error);
+        addToast('Error fetching cameras. Try again Later!', <FaExclamationTriangle />);
       }
     };
     fetchCameras();
