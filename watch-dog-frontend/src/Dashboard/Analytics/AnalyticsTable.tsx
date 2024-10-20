@@ -1,11 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Bar, Pie } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import { Tab } from '@headlessui/react';  // Import Tailwind Tabs
 import { FaUsers, FaCar, FaExclamationTriangle, FaDog, FaCrow, FaVideo } from "react-icons/fa"; // Importing relevant icons
+import { CAMS_API_URL, ANALYTICS_API_URL } from "../../constants";
+import axios from "axios";
+import { useToast } from "../../Toast/ToastContext";
 
 // Register all the chart components in Chart.js
 Chart.register(...registerables);
+
+interface Camera {
+    id: number;
+    name: string;
+    url: string;
+    live: boolean;
+    email: string;
+    monitoringStatus: boolean;
+  }
 
 interface AnalyticsData {
     total_footage_analyzed: number;
@@ -26,22 +38,52 @@ const AnalyticsTable: React.FC = () => {
     // Example camId data
     const camIds = ['Cam01', 'Cam02', 'Cam03'];
 
+    const [cameras, setCameras] = useState<Camera[]>([]);
+    const [selectedCam, setSelectedCam] = useState<Camera | null>(null);
+
     const [selectedCamId, setSelectedCamId] = useState<string>(camIds[0]);
     const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
 
-    // Mock data fetching function
-    const fetchAnalyticsData = () => {
-        // Replace with actual fetch call or logic
-        const data: AnalyticsData = {
-            total_footage_analyzed: 50,
-            total_individuals_detected: 120,
-            average_human_passerbys_per_footage: 2.4,
-            total_unusual_incidents: 5,
-            total_animal_incidents: 3,
-            total_unusual_crowd_incidents: 1,
-            total_vehicle_detected: 60,
+    const { addToast } = useToast();
+
+    useEffect(() => {
+        const fetchCameras = async () => {
+          try {
+            const response = await axios.get(CAMS_API_URL);
+            setCameras(response.data); // Assuming data is an array of cameras
+            if (response.data.length > 0) {
+                setSelectedCam(response.data[0]); // Set the first camera as selected if available
+            }
+          } catch (error) {
+            console.error('Error fetching cameras:', error);
+            addToast('Error fetching cameras. Try again Later!', <FaExclamationTriangle />);
+          }
         };
-        setAnalyticsData(data);
+        fetchCameras();
+      }, []);
+
+    // Mock data fetching function
+    const fetchAnalyticsData = async () => {
+        try {
+            const cameraId = selectedCam?.id || 0; 
+            const response = await axios.get(ANALYTICS_API_URL+`${cameraId}`);
+            
+            // Assuming the response data is an array and you want the first item
+            if (response.data.length > 0) {
+                const data: AnalyticsData = response.data[0];
+                data.average_human_passerbys_per_footage = data.total_individuals_detected / data.total_footage_analyzed;
+                 // Adjust based on your response structure
+                setAnalyticsData(data);
+            } else {
+                console.error('No analytics data found for this camera.');
+                addToast('No analytics data found for this camera.', <FaExclamationTriangle />);
+                setAnalyticsData(null); // Reset or handle no data case
+            }
+        } catch (error) {
+            console.error('Error fetching analytics data:', error);
+            addToast('Error fetching analytics data. Try again Later!', <FaExclamationTriangle />);
+            setAnalyticsData(null); // Reset or handle error case
+        }
     };
 
     // Bar Chart Data
@@ -92,17 +134,21 @@ const AnalyticsTable: React.FC = () => {
             <div className="flex justify-between mb-6">
                 <div className="w-1/2">
                     <label htmlFor="camId" className="block text-lg font-medium text-gray-700 mb-2">
-                        Select Camera ID:
+                        Select Camera :
                     </label>
                     <select
                         id="camId"
-                        value={selectedCamId}
-                        onChange={(e) => setSelectedCamId(e.target.value)}
+                        value={selectedCam ? selectedCam.id : ''}
+                        onChange={(e) => {
+                            setAnalyticsData(null); 
+                            const selectedCamera = cameras.find(camera => camera.id === parseInt(e.target.value)); // Use id for selection
+                            setSelectedCam(selectedCamera || null); // Handle potential null case
+                        }}
                         className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent"
                     >
-                        {camIds.map((camId) => (
-                            <option key={camId} value={camId}>
-                                {camId}
+                        {cameras.map((camera) => (
+                            <option key={camera.id} value={camera.id}>
+                                {camera.name} (ID {camera.id})
                             </option>
                         ))}
                     </select>
@@ -113,6 +159,7 @@ const AnalyticsTable: React.FC = () => {
                     <button
                         onClick={fetchAnalyticsData}
                         className="ml-6 px-6 py-2 bg-sky-500 hover:bg-sky-600 text-white font-semibold rounded-md shadow-md"
+                        
                     >
                         Get Analytics
                     </button>
@@ -174,21 +221,19 @@ const AnalyticsTable: React.FC = () => {
                     <Tab.Group>
                         <Tab.List className="flex space-x-4 mb-6 justify-center">
                             <Tab className={({ selected }) => classNames("px-6 py-2 text-base font-semibold rounded-lg", selected ? "bg-sky-500 text-white" : "text-gray-700 bg-gray-200")}>
-                                Bar Chart Overview
+                               Analytics Overview
                             </Tab>
                             <Tab className={({ selected }) => classNames("px-6 py-2 text-base font-semibold rounded-lg", selected ? "bg-sky-500 text-white" : "text-gray-700 bg-gray-200")}>
-                                Pie Chart Breakdown
+                                Incidents Breakdown
                             </Tab>
                         </Tab.List>
 
                         <Tab.Panels>
                             <Tab.Panel className="w-full h-[400px]">
-                                <h3 className="text-xl font-semibold text-gray-700 mb-4 text-center">Analytics Overview (Bar Chart)</h3>
                                 {barChartData && <Bar data={barChartData} options={{ responsive: true }} />}
                             </Tab.Panel>
 
                             <Tab.Panel className="w-full h-[400px]">
-                                <h3 className="text-xl font-semibold text-gray-700 mb-4 text-center">Incident Breakdown (Pie Chart)</h3>
                                 {pieChartData && <Pie data={pieChartData} options={{ responsive: true }} />}
                             </Tab.Panel>
                         </Tab.Panels>
