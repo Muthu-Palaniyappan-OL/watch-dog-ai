@@ -9,3 +9,4 @@ mkdir ~/pip_temp
 TMPDIR=~/pip_temp pip install -r requirements.txt
 # add port and env type in .env
 sudo cp flask.service /etc/systemd/system/flask.service
+sudo systemctl daemon-reload

@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 User=ec2-user
-WorkingDirectory=~/watch-dog-ai/watch-dog-backend
-ExecStart=~/watch-dog-ai/watch-dog-backend/venv/bin/python ~/watch-dog-ai/watch-dog-backend/main.py
+WorkingDirectory=/home/ec2-user/watch-dog-ai/watch-dog-backend
+ExecStart=/home/ec2-user/watch-dog-ai/watch-dog-backend/venv/bin/python /home/ec2-user/watch-dog-ai/watch-dog-backend/main.py
 Restart=always
 RestartSec=5
 Environment="PORT=80"
