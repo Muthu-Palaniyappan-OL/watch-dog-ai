@@ -25,6 +25,7 @@ const WatchDogChat: React.FC = () => {
     AIMLAPI: [],
     LocalEdge: []
   });
+  const myRef = useRef<HTMLElement | null>(null);
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [activeChat, setActiveChat] = useState<'AIMLAPI' | 'LocalEdge'>('AIMLAPI'); // Toggle between chats
   const [chatInput, setChatInput] = useState<string>(''); // Chat input state
@@ -40,7 +41,19 @@ const WatchDogChat: React.FC = () => {
   
   const { addToast } = useToast();
 
-  
+  const chatEndRef = useRef(null); // Create a reference for the last chat element
+
+  const scrollToBottom = () => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' }); // Scroll to the bottom smoothly
+    }
+  };
+
+  // Use useEffect to trigger the scroll whenever the chat history updates
+  useEffect(() => {
+    scrollToBottom(); // Scroll down when chatHistory updates
+  }, [chatHistory]);
+
 
   // Fetch cameras from the API on component mount
   useEffect(() => {
@@ -52,6 +65,7 @@ const WatchDogChat: React.FC = () => {
         console.error('Error fetching cameras:', error);
       }
     };
+    scrollToBottom();
     fetchCameras();
   }, []);
 
@@ -108,6 +122,8 @@ const WatchDogChat: React.FC = () => {
           camera: camera, // Store the selected camera
         })),
       }));
+
+      scrollToBottom();
   
       // Scroll to the bottom of the chat history
       if (chatHistoryRef.current) {
@@ -223,6 +239,7 @@ const WatchDogChat: React.FC = () => {
           if (chatHistoryRef.current) {
             chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
           }
+          myRef.current?.scrollIntoView();
    
           return { ...prev, [activeChat]: updatedChats };
         });
@@ -231,6 +248,10 @@ const WatchDogChat: React.FC = () => {
       setIsLoading(false); 
     }
   };
+ 
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatHistory]); // Trigger the scroll whenever chatHistory changes
 
   const downloadImage = (base64Image, fileName) => {
     const link = document.createElement("a");
@@ -290,7 +311,7 @@ const WatchDogChat: React.FC = () => {
   
         
 
-        <div className="flex flex-col h-full ">
+        <div className="flex flex-col h-full" id="chat-container">
           
           <div ref={chatHistoryRef} className="flex-1 overflow-y-auto p-4 bg-gray-100 border border-gray-300 rounded-md max-h-96 min-h-96">
             {!selectedCam && (
@@ -383,10 +404,7 @@ const WatchDogChat: React.FC = () => {
 
               </div>
             ))}
-
-
-
-
+<div ref={chatEndRef}></div>
 
           </div>
 
@@ -420,8 +438,7 @@ const WatchDogChat: React.FC = () => {
               </button>
             </div>
           )}
-        </div>
-
+        </div> 
 
       </div>
     );
